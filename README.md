@@ -41,8 +41,8 @@ TaskMaster is a modern, collaborative task management application built with a f
 Ensure you have the following installed on your machine:
 *   [Node.js](https://nodejs.org/) (v18 or higher)
 *   [npm](https://www.npmjs.com/) or [pnpm](https://pnpm.io/)
-*   [Docker](https://www.docker.com/) & Docker Compose (optional, for easy setup)
 *   [MongoDB](https://www.mongodb.com/) (if running locally without Docker)
+*   [Docker](https://www.docker.com/) & Docker Compose (optional, for easy setup)
 
 ## ⚡ Getting Started
 

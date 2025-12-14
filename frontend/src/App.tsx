@@ -7,10 +7,16 @@ import { Dashboard } from './pages/Dashboard';
 import { Projects } from './pages/Projects';
 import { ProjectDetails } from './pages/ProjectDetails';
 import { TaskDetails } from './pages/TaskDetails';
+import { AdminDashboard } from './pages/AdminDashboard';
+import { MyTasks } from './pages/MyTasks';
+import { Team } from './pages/Team';
+import { Settings } from './pages/Settings';
 import { useAuthStore } from './store/auth.store';
 import { RoleBasedRoute } from './components/RoleBasedRoute';
 import { useSocket } from './hooks/useSocket';
 import { ToastProvider } from './context/ToastContext';
+import { Layout } from './components/Layout';
+import { Outlet } from 'react-router-dom';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -39,29 +45,56 @@ const AppContent = () => {
         isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
       } />
 
-      <Route path="/dashboard" element={
-        <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
-          <Dashboard />
-        </RoleBasedRoute>
-      } />
+      {/* Authenticated Layout Routes */}
+      <Route element={<Layout><Outlet /></Layout>}>
+        <Route path="/dashboard" element={
+          <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
+            <Dashboard />
+          </RoleBasedRoute>
+        } />
 
-      <Route path="/projects" element={
-        <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
-          <Projects />
-        </RoleBasedRoute>
-      } />
+        <Route path="/projects" element={
+          <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
+            <Projects />
+          </RoleBasedRoute>
+        } />
 
-      <Route path="/projects/:id" element={
-        <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
-          <ProjectDetails />
-        </RoleBasedRoute>
-      } />
+        <Route path="/projects/:id" element={
+          <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
+            <ProjectDetails />
+          </RoleBasedRoute>
+        } />
 
-      <Route path="/tasks/:taskId" element={
-        <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
-          <TaskDetails />
-        </RoleBasedRoute>
-      } />
+        <Route path="/tasks" element={
+          <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
+            <MyTasks />
+          </RoleBasedRoute>
+        } />
+
+        <Route path="/tasks/:taskId" element={
+          <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
+            <TaskDetails />
+          </RoleBasedRoute>
+        } />
+
+        <Route path="/team" element={
+          <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
+            <Team />
+          </RoleBasedRoute>
+        } />
+
+        <Route path="/settings" element={
+          <RoleBasedRoute allowedRoles={['admin', 'manager', 'user']}>
+            <Settings />
+          </RoleBasedRoute>
+        } />
+
+        <Route path="/admin" element={
+          <RoleBasedRoute allowedRoles={['admin']}>
+            <AdminDashboard />
+          </RoleBasedRoute>
+        } />
+      </Route>
 
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
     </Routes>

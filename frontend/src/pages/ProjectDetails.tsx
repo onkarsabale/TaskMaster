@@ -31,7 +31,7 @@ export const ProjectDetails = () => {
     // Fetch tasks for this project specifically. 
     // Note: API needs to support 'project' filter. 
     // Assuming we passed `{ project: id }` to useTasks.
-    const { data: tasks = [], isLoading: isTasksLoading } = useTasks(id ? { project: id } : undefined);
+    const { data: tasks = [], isLoading: isTasksLoading } = useTasks(id ? { projectId: id } : undefined);
 
     const createTaskMutation = useCreateTask();
     const updateTaskMutation = useUpdateTask();
@@ -49,15 +49,15 @@ export const ProjectDetails = () => {
         project?.members.find((m: ProjectMember) => m.user._id === user?._id),
         [project, user]);
 
-    const isManager = project?.owner._id === user?._id || myMemberInfo?.role === 'project_manager';
+    const isManager = user?.role === 'admin' || project?.owner._id === user?._id || myMemberInfo?.role === 'project_manager';
 
-    const handleCreateOrUpdateTask = async (data: CreateTaskDto | UpdateTaskDto) => {
+    const handleCreateOrUpdateTask = async (data: CreateTaskDto | UpdateTaskDto, taskId?: string) => {
         try {
-            if (editingTask) {
-                await updateTaskMutation.mutateAsync({ id: editingTask._id, data });
+            if (taskId || editingTask) {
+                await updateTaskMutation.mutateAsync({ id: taskId || editingTask!._id, data });
             } else {
                 // Ensure projectId is attached
-                await createTaskMutation.mutateAsync({ ...data, project: id } as CreateTaskDto);
+                await createTaskMutation.mutateAsync({ ...data, projectId: id } as CreateTaskDto);
             }
             setIsTaskModalOpen(false);
             setEditingTask(undefined);
@@ -180,9 +180,9 @@ export const ProjectDetails = () => {
                                 tasks={tasks}
                                 onEdit={(task) => { setEditingTask(task); setIsTaskModalOpen(true); }}
                                 onDelete={handleDeleteTask}
-                                onStatusUpdate={(task) => handleCreateOrUpdateTask({
-                                    status: task.status === 'completed' ? 'pending' : 'completed',
-                                } as UpdateTaskDto)}
+                                onStatusUpdate={(task, newStatus) => handleCreateOrUpdateTask({
+                                    status: (newStatus || (task.status === 'completed' ? 'pending' : 'completed')) as Task['status'],
+                                } as UpdateTaskDto, task._id)}
                             />
                         )}
                     </div>

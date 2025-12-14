@@ -1,16 +1,19 @@
 import type { Task } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { PermissionGuard } from './PermissionGuard';
+import { useState } from 'react';
+import { StatusChangeModal } from './StatusChangeModal';
 
 interface TaskListProps {
     tasks: Task[];
     onEdit: (task: Task) => void;
     onDelete: (id: string) => void;
-    onStatusUpdate: (task: Task) => void;
+    onStatusUpdate: (task: Task, newStatus?: string) => void;
 }
 
 export const TaskList = ({ tasks, onEdit, onDelete, onStatusUpdate }: TaskListProps) => {
     const navigate = useNavigate();
+    const [statusTask, setStatusTask] = useState<Task | null>(null);
 
     return (
         <div className="bg-[rgb(var(--color-bg))] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col divide-y divide-gray-200 dark:divide-gray-800">
@@ -36,7 +39,7 @@ export const TaskList = ({ tasks, onEdit, onDelete, onStatusUpdate }: TaskListPr
                     >
                         <div className="hidden sm:block w-8">
                             <div
-                                onClick={(e) => { e.stopPropagation(); onStatusUpdate(task); }}
+                                onClick={(e) => { e.stopPropagation(); setStatusTask(task); }}
                                 className={`size-4 rounded-full border cursor-pointer ${task.status === 'completed' ? 'bg-green-500 border-green-500' : 'border-gray-300 dark:border-gray-600 group-hover:border-[rgb(var(--color-primary))]'}`}
                             >
                                 {task.status === 'completed' && <span className="material-symbols-outlined text-[16px] text-white -mt-0.5 -ml-0.5">check</span>}
@@ -88,6 +91,16 @@ export const TaskList = ({ tasks, onEdit, onDelete, onStatusUpdate }: TaskListPr
                         </div>
                     </div>
                 ))
+            )}
+            {statusTask && (
+                <StatusChangeModal
+                    task={statusTask}
+                    onClose={() => setStatusTask(null)}
+                    onConfirm={(newStatus) => {
+                        onStatusUpdate(statusTask, newStatus);
+                        setStatusTask(null);
+                    }}
+                />
             )}
         </div>
     );

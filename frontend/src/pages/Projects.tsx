@@ -81,7 +81,7 @@ export const Projects = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {projects?.map((project) => {
-                    const myMember = project.members.find((m: any) => m.user._id === user?._id);
+                    const myMember = project.members.find((m: import('../types/project').ProjectMember) => m.user._id === user?._id);
 
                     return (
                         <div
@@ -109,7 +109,7 @@ export const Projects = () => {
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className="material-symbols-outlined text-[18px]">task</span>
-                                    <span>{(project as any).taskCount || 0} tasks</span>
+                                    <span>{(project as unknown as { taskCount: number }).taskCount || 0} tasks</span>
                                 </div>
                             </div>
                         </div>

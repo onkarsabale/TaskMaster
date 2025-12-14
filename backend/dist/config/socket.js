@@ -47,6 +47,34 @@ export const initSocket = (httpServer) => {
             if (user.role === 'manager')
                 socket.join('room:managers');
             logger.info(`User ${user.userId} joined rooms: user:${user.userId}, room:${user.role}s`);
+            // Handle Project Rooms
+            socket.on('join:project', async (projectId) => {
+                try {
+                    // Lazy import to avoid circular dep issues if any, or just standard import
+                    const { Project } = await import('../modules/projects/project.model.js');
+                    const project = await Project.findById(projectId);
+                    if (project) {
+                        const isMember = user.role === 'admin' || project.members.some(m => m.user.toString() === user.userId)
+                            || project.owner.toString() === user.userId;
+                        if (isMember) {
+                            socket.join(`project:${projectId}`);
+                            logger.info(`User ${user.userId} joined project room: project:${projectId}`);
+                            socket.emit('joined:project', projectId);
+                        }
+                        else {
+                            logger.warn(`User ${user.userId} attempted to join project ${projectId} but is not a member`);
+                            socket.emit('error', 'Not authorized to join this project room');
+                        }
+                    }
+                }
+                catch (error) {
+                    logger.error(`Error joining project room: ${error}`);
+                }
+            });
+            socket.on('leave:project', (projectId) => {
+                socket.leave(`project:${projectId}`);
+                logger.info(`User ${user.userId} left project room: project:${projectId}`);
+            });
         }
         socket.on('disconnect', () => {
             logger.info(`Socket disconnected: ${socket.id}`);

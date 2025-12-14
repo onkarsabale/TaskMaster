@@ -14,7 +14,15 @@ export const checkProjectPermission = (action) => {
             if (!project) {
                 return res.status(404).json({ message: 'Project not found' });
             }
+            // 0. Global Admin Bypass
+            if (req.user.role === 'admin') {
+                return next();
+            }
             const memberStrId = req.user._id.toString();
+            // 0.5 Owner Bypass (Owner is effectively PM)
+            if (project.owner.toString() === memberStrId) {
+                return next();
+            }
             const memberRecord = project.members.find(m => m.user.toString() === memberStrId);
             if (!memberRecord) {
                 return res.status(403).json({ message: 'Access denied: Not a project member' });

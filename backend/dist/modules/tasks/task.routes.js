@@ -3,7 +3,7 @@ import * as taskController from './task.controller.js';
 import { protect, authorize } from '../../middlewares/auth.middleware.js';
 const router = Router();
 router.use(protect);
-router.post('/', authorize('admin', 'manager'), taskController.createTask);
+router.post('/', authorize('admin', 'manager', 'user'), taskController.createTask);
 router.get('/', taskController.getTasks);
 router.get('/:id', taskController.getTaskById);
 router.put('/:id', taskController.updateTask); // Keep PUT for full updates if needed, mostly PATCH

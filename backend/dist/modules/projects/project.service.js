@@ -21,6 +21,17 @@ export const addMember = async (projectId, userId, role) => {
     return await Project.findByIdAndUpdate(projectId, { $addToSet: { members: { user: userId, role } } }, { new: true }).populate('members.user', 'username email');
 };
 export const removeMember = async (projectId, userId) => {
-    return await Project.findByIdAndUpdate(projectId, { $pull: { members: { user: userId } } }, { new: true });
+    // 1. Remove member from project
+    const project = await Project.findByIdAndUpdate(projectId, { $pull: { members: { user: userId } } }, { new: true });
+    // 2. Unassign tasks assigned to this user in this project
+    // We need to import Task model to do this. Ideally, we shouldn't create circular dependency...
+    // But since Task depends on Project, Project depends on Task (conceptually), we might need to be careful.
+    // Better way: Import Task model directly here or use a service method if circular dep is an issue.
+    // Let's use mongoose model directly to avoid service cycle if any.
+    // Dynamic import to avoid circular dependency if Task Service imports Project Service
+    const { Task } = await import('../tasks/task.model.js');
+    await Task.updateMany({ projectId: projectId, assignedTo: userId }, { $unset: { assignedTo: 1 } } // Remove field or set to null? Schema says assignedTo is optional ObjectId. $unset removes it.
+    );
+    return project;
 };
 //# sourceMappingURL=project.service.js.map

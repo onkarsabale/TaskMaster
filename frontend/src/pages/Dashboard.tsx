@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Task } from '../types';
 import { TaskForm } from '../components/TaskForm';
 import { Loader } from '../components/Loader';
@@ -13,8 +14,10 @@ import { ErrorState } from '../components/ErrorState';
 import type { CreateTaskDto, UpdateTaskDto } from '../types/task';
 import { ProfileModal } from '../components/ProfileModal';
 import * as authApi from '../api/auth.api';
+import type { Project } from '../types/project';
 
 export const Dashboard = () => {
+    const navigate = useNavigate();
     // React Query Hooks
     const { data: tasks = [], isLoading, error } = useTasks();
     const { data: projects = [] } = useProjects();
@@ -35,7 +38,12 @@ export const Dashboard = () => {
 
     const [isProfileOpen, setIsProfileOpen] = useState(false);
 
-    const { user, login } = useAuthStore();
+
+
+
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+    const { user, login, logout } = useAuthStore();
 
     // Socket logic temporarily kept, but will be refactored to just invalidate queries
     // const socket = useSocket(); 
@@ -45,10 +53,10 @@ export const Dashboard = () => {
     // For now, let's trust React Query's refetch on invalidation.
     // The socket integration step will handle the invalidation trigger.
 
-    const handleCreateOrUpdate = async (data: CreateTaskDto | UpdateTaskDto) => {
+    const handleCreateOrUpdate = async (data: CreateTaskDto | UpdateTaskDto, taskId?: string) => {
         try {
-            if (editingTask) {
-                await updateTaskMutation.mutateAsync({ id: editingTask._id, data });
+            if (taskId || editingTask) {
+                await updateTaskMutation.mutateAsync({ id: taskId || editingTask!._id, data });
             } else {
                 await createTaskMutation.mutateAsync(data as CreateTaskDto);
             }
@@ -57,6 +65,27 @@ export const Dashboard = () => {
         } catch (error: unknown) {
             console.error(error);
             alert('Failed to save task');
+        }
+    };
+
+    const handleUpdateProfile = async (data: { username: string; avatar?: string }) => {
+        try {
+            const updatedUser = await authApi.updateProfile(data);
+            login(updatedUser); // Update local store
+        } catch (error) {
+            console.error(error);
+            alert('Failed to update profile');
+            throw error;
+        }
+    };
+
+    const handleLogout = async () => {
+        try {
+            await authApi.logout();
+            logout(); // Clear store
+        } catch (error) {
+            console.error('Logout failed', error);
+            logout();
         }
     };
 
@@ -70,16 +99,8 @@ export const Dashboard = () => {
         }
     };
 
-    const handleUpdateProfile = async (data: { username: string; avatar?: string }) => {
-        try {
-            const updatedUser = await authApi.updateProfile(data);
-            login(updatedUser); // Update local store
-        } catch (error) {
-            console.error(error);
-            alert('Failed to update profile');
-            throw error; // Let modal handle loading state
-        }
-    };
+
+
 
     // Derived Logic
     const stats = useMemo(() => {
@@ -207,18 +228,56 @@ export const Dashboard = () => {
                         <span className="material-symbols-outlined">notifications</span>
                         <span className="absolute top-2 right-2 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#111418]"></span>
                     </button>
-                    <button
-                        onClick={() => setIsProfileOpen(true)}
-                        className="relative size-9 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 hover:ring-2 hover:ring-primary/50 transition-all cursor-pointer"
-                    >
-                        {user?.avatar ? (
-                            <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                        ) : (
-                            <div className="w-full h-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
-                                {user?.username?.charAt(0).toUpperCase()}
-                            </div>
+                    <div className="relative">
+                        <button
+                            onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                            className="relative size-9 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 hover:ring-2 hover:ring-primary/50 transition-all cursor-pointer"
+                        >
+                            {user?.avatar ? (
+                                <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+                                    {user?.username?.charAt(0).toUpperCase()}
+                                </div>
+                            )}
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        {isUserMenuOpen && (
+                            <>
+                                <div
+                                    className="fixed inset-0 z-10"
+                                    onClick={() => setIsUserMenuOpen(false)}
+                                ></div>
+                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#1e2736] rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-20 overflow-hidden">
+                                    <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
+                                        <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user?.username}</p>
+                                        <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                                    </div>
+                                    <button
+                                        onClick={() => {
+                                            setIsUserMenuOpen(false);
+                                            setIsProfileOpen(true);
+                                        }}
+                                        className="w-full text-left px-4 py-2 text-sm text-slate-700 dark:text-slate-200 hover:bg-gray-50 dark:hover:bg-[#28303b] flex items-center gap-2"
+                                    >
+                                        <span className="material-symbols-outlined text-[18px]">person</span>
+                                        Update Profile
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsUserMenuOpen(false);
+                                            handleLogout();
+                                        }}
+                                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-2"
+                                    >
+                                        <span className="material-symbols-outlined text-[18px]">logout</span>
+                                        Logout
+                                    </button>
+                                </div>
+                            </>
                         )}
-                    </button>
+                    </div>
                     <button
                         onClick={() => window.location.href = '/projects'}
                         className="hidden sm:flex bg-white dark:bg-[#1e2736] border border-gray-200 dark:border-gray-700 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2 rounded-lg items-center gap-2 transition-colors hover:bg-gray-50 dark:hover:bg-[#28303b]"
@@ -226,6 +285,15 @@ export const Dashboard = () => {
                         <span className="material-symbols-outlined text-[20px]">folder</span>
                         <span>My Projects</span>
                     </button>
+                    {user?.role === 'admin' && (
+                        <button
+                            onClick={() => window.location.href = '/admin'}
+                            className="hidden sm:flex bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg items-center gap-2 transition-colors shadow-lg shadow-purple-500/20 cursor-pointer"
+                        >
+                            <span className="material-symbols-outlined text-[20px]">admin_panel_settings</span>
+                            <span>Admin</span>
+                        </button>
+                    )}
                     <button
                         onClick={() => { setEditingTask(undefined); setIsModalOpen(true); }}
                         className="hidden sm:flex bg-[rgb(var(--color-primary))] hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg items-center gap-2 transition-colors shadow-lg shadow-blue-500/20 cursor-pointer"
@@ -263,22 +331,20 @@ export const Dashboard = () => {
                         <section className="flex flex-col gap-4">
                             <h3 className="text-lg font-bold text-[rgb(var(--color-text))]">Projects I belong to</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {projects.slice(0, 3).map((project: any) => (
+                                {projects.map((project: Project) => (
                                     <div
-                                        key={project._id}
-                                        onClick={() => window.location.href = `/projects/${project._id}`}
-                                        className="bg-white dark:bg-[#1e2736] p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
+                                        key={project?._id || Math.random()}
+                                        onClick={() => navigate(`/projects/${project?._id}`)}
+                                        className="bg-[rgb(var(--color-bg))] rounded-lg border border-gray-100 dark:border-gray-800 p-4 hover:shadow-md transition-shadow cursor-pointer min-w-[280px] snap-center"
                                     >
                                         <div className="flex justify-between items-start mb-2">
-                                            <h4 className="font-semibold text-slate-900 dark:text-white truncate">{project.title}</h4>
-                                            <span className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-0.5 rounded-full">
-                                                {project.owner._id === user?._id ? 'Owner' : 'Member'}
-                                            </span>
+                                            <h3 className="font-semibold text-slate-800 dark:text-white truncate pr-2">{project?.title || 'Untitled Project'}</h3>
+                                            {project?.createdAt && (new Date().getTime() - new Date(project.createdAt).getTime() < 24 * 60 * 60 * 1000) && <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full font-medium">NEW</span>}
                                         </div>
-                                        <p className="text-sm text-slate-500 line-clamp-2 mb-3 h-10">{project.description || 'No description'}</p>
-                                        <div className="flex items-center text-xs text-slate-400">
-                                            <span className="material-symbols-outlined text-[16px] mr-1">group</span>
-                                            {project.members?.length || 0} members
+                                        <p className="text-sm text-slate-500 dark:text-gray-400 line-clamp-2 mb-3 h-10">{project?.description || 'No description available'}</p>
+                                        <div className="flex items-center justify-between text-xs text-slate-400 dark:text-gray-500">
+                                            <span>{project?.members?.length || 0} members</span>
+                                            <span>{project?.updatedAt ? new Date(project.updatedAt).toLocaleDateString() : 'N/A'}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -403,9 +469,9 @@ export const Dashboard = () => {
                             tasks={filteredTasks}
                             onEdit={(task) => { setEditingTask(task); setIsModalOpen(true); }}
                             onDelete={handleDelete}
-                            onStatusUpdate={(task) => handleCreateOrUpdate({
-                                status: task.status === 'completed' ? 'pending' : 'completed',
-                            } as UpdateTaskDto)}
+                            onStatusUpdate={(task, newStatus) => handleCreateOrUpdate({
+                                status: (newStatus || (task.status === 'completed' ? 'pending' : 'completed')) as Task['status'],
+                            } as UpdateTaskDto, task._id)}
                         />
                     </section>
                 </div>
@@ -421,6 +487,7 @@ export const Dashboard = () => {
                             initialData={editingTask}
                             onSubmit={handleCreateOrUpdate}
                             onCancel={() => setIsModalOpen(false)}
+                            projects={projects}
                         />
                     </div>
                 </div>

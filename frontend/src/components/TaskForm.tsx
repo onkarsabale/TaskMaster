@@ -12,6 +12,7 @@ const taskSchema = z.object({
     priority: z.enum(['low', 'medium', 'high']),
     dueDate: z.string().optional(),
     assignedTo: z.string().optional(),
+    projectId: z.string().optional(),
 });
 
 type TaskFormData = z.infer<typeof taskSchema>;
@@ -24,9 +25,10 @@ interface TaskFormProps {
     onCancel: () => void;
     projectId?: string;
     projectMembers?: ProjectMember[];
+    projects?: import('../types/project').Project[]; // Passed when creating from Dashboard
 }
 
-export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers }: TaskFormProps) => {
+export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, projects }: TaskFormProps) => {
     const { user } = useAuthStore();
     const isEditMode = !!initialData;
     const isUser = user?.role === 'user';
@@ -41,7 +43,8 @@ export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers }: Ta
             status: initialData?.status || 'pending',
             priority: initialData?.priority || 'medium',
             dueDate: initialData?.dueDate ? new Date(initialData.dueDate).toISOString().split('T')[0] : '',
-            assignedTo: typeof initialData?.assignedTo === 'object' ? initialData.assignedTo.email : (initialData?.assignedTo as string) || ''
+            assignedTo: typeof initialData?.assignedTo === 'object' ? initialData.assignedTo.email : (initialData?.assignedTo as string) || '',
+            projectId: typeof initialData?.project === 'string' ? initialData.project : (initialData as Task & { projectId?: string })?.projectId || (projects && projects.length > 0 ? projects[0]._id : ''),
         },
     });
 
@@ -66,6 +69,29 @@ export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers }: Ta
                     />
                     {errors.title && <span className="text-red-500 text-xs">{errors.title.message}</span>}
                 </div>
+
+                {/* Project Selector */}
+                {projects && !isEditMode && (
+                    <div className="flex flex-col gap-2">
+                        <label className="text-slate-700 dark:text-white text-base font-medium leading-normal">Project</label>
+                        <div className="relative">
+                            <select
+                                {...register('projectId')}
+                                className="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[rgb(var(--color-text))] focus:outline-0 focus:ring-2 focus:ring-[rgb(var(--color-primary))]/50 border border-slate-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:border-[rgb(var(--color-primary))] h-12 placeholder:text-slate-400 px-4 pr-10 text-base font-normal leading-normal appearance-none transition-all cursor-pointer"
+                            >
+                                {projects.map((p) => (
+                                    <option key={p._id} value={p._id}>
+                                        {p.title}
+                                    </option>
+                                ))}
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 dark:text-[#9da8b9]">
+                                <span className="material-symbols-outlined" style={{ fontSize: '20px' }}>expand_more</span>
+                            </div>
+                        </div>
+                        {errors.projectId && <span className="text-red-500 text-xs">{errors.projectId.message}</span>}
+                    </div>
+                )}
 
                 {/* Description */}
                 <div className="flex flex-col gap-2">
@@ -118,8 +144,6 @@ export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers }: Ta
                         <div className="relative">
                             <select
                                 {...register('status')}
-                                // Status is ALWAYS editable in edit mode (or per logic), user can change it. 
-                                // So we DO NOT disable it based on isReadOnly (which targets Title/Desc/etc)
                                 className="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[rgb(var(--color-text))] focus:outline-0 focus:ring-2 focus:ring-[rgb(var(--color-primary))]/50 border border-slate-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:border-[rgb(var(--color-primary))] h-12 placeholder:text-slate-400 px-4 pr-10 text-base font-normal leading-normal appearance-none transition-all cursor-pointer"
                             >
                                 <option value="pending">Pending</option>

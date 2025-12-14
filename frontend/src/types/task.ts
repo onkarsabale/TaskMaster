@@ -21,7 +21,7 @@ export interface CreateTaskDto {
     priority?: 'low' | 'medium' | 'high';
     dueDate?: string;
     assignedTo?: string;
-    project?: string;
+    projectId?: string;
 }
 
 export type UpdateTaskDto = Partial<CreateTaskDto>;
@@ -30,6 +30,7 @@ export interface TaskFilter {
     status?: string;
     priority?: string;
     assignedTo?: string;
-    project?: string;
+    projectId?: string;
+    project?: string; // Keep for backward compatibility if needed, or remove
     createdBy?: string;
 }

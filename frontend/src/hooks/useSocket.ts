@@ -60,7 +60,7 @@ export const useSocket = () => {
         }
 
         // Cache Optimizations & Event Handlers
-        const handleTaskCreated = (data: Task) => {
+        const handleTaskCreated = () => {
             // Invalidate queries to be safe across project lists
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
         };

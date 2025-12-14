@@ -8,6 +8,7 @@ const userSchema = new Schema({
         enum: ['user', 'manager', 'admin'],
         default: 'user',
     },
+    avatar: { type: String, default: '' },
 }, { timestamps: true });
 export const User = mongoose.model('User', userSchema);
 //# sourceMappingURL=user.model.js.map

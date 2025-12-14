@@ -61,7 +61,7 @@ export const initSocket = (httpServer: HttpServer) => {
                     const project = await Project.findById(projectId);
 
                     if (project) {
-                        const isMember = project.members.some(m => m.user.toString() === user.userId)
+                        const isMember = user.role === 'admin' || project.members.some(m => m.user.toString() === user.userId)
                             || project.owner.toString() === user.userId;
 
                         if (isMember) {

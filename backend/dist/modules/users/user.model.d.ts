@@ -4,6 +4,7 @@ export interface IUser extends Document {
     email: string;
     passwordHash: string;
     role: 'user' | 'manager' | 'admin';
+    avatar?: string;
     createdAt: Date;
     updatedAt: Date;
 }
