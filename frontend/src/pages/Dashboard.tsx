@@ -1,0 +1,437 @@
+import { useState, useMemo } from 'react';
+import type { Task } from '../types';
+import { TaskForm } from '../components/TaskForm';
+import { Loader } from '../components/Loader';
+// import { useSocket } from '../hooks/useSocket'; // Will be verified in step 7
+import { useAuthStore } from '../store/auth.store';
+import { DashboardStats } from '../components/DashboardStats';
+import { TaskList } from '../components/TaskList';
+import { useTasks, useCreateTask, useUpdateTask, useDeleteTask } from '../hooks/useTasks';
+import { PermissionGuard } from '../components/PermissionGuard';
+import { useProjects } from '../hooks/useProjects';
+import { ErrorState } from '../components/ErrorState';
+import type { CreateTaskDto, UpdateTaskDto } from '../types/task';
+import { ProfileModal } from '../components/ProfileModal';
+import * as authApi from '../api/auth.api';
+
+export const Dashboard = () => {
+    // React Query Hooks
+    const { data: tasks = [], isLoading, error } = useTasks();
+    const { data: projects = [] } = useProjects();
+    const createTaskMutation = useCreateTask();
+    const updateTaskMutation = useUpdateTask();
+    const deleteTaskMutation = useDeleteTask();
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
+
+    // Filter states
+    const [tab, setTab] = useState<'assigned' | 'created'>('assigned');
+    const [statusFilter, setStatusFilter] = useState<string>('all');
+    const [priorityFilter, setPriorityFilter] = useState<string>('all');
+    const [sortBy, setSortBy] = useState<'dueDate' | 'priority' | 'newest'>('dueDate');
+    const [searchQuery, setSearchQuery] = useState('');
+
+
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+    const { user, login } = useAuthStore();
+
+    // Socket logic temporarily kept, but will be refactored to just invalidate queries
+    // const socket = useSocket(); 
+
+    // We don't need manual socket updates if we use invalidateQueries, 
+    // but the requirement says "Socket updates should sync data, not replace REST calls"
+    // For now, let's trust React Query's refetch on invalidation.
+    // The socket integration step will handle the invalidation trigger.
+
+    const handleCreateOrUpdate = async (data: CreateTaskDto | UpdateTaskDto) => {
+        try {
+            if (editingTask) {
+                await updateTaskMutation.mutateAsync({ id: editingTask._id, data });
+            } else {
+                await createTaskMutation.mutateAsync(data as CreateTaskDto);
+            }
+            setIsModalOpen(false);
+            setEditingTask(undefined);
+        } catch (error: unknown) {
+            console.error(error);
+            alert('Failed to save task');
+        }
+    };
+
+    const handleDelete = async (id: string) => {
+        if (user?.role !== 'admin') {
+            alert('Only Admins can delete tasks.');
+            return;
+        }
+        if (confirm('Are you sure?')) {
+            await deleteTaskMutation.mutateAsync(id);
+        }
+    };
+
+    const handleUpdateProfile = async (data: { username: string; avatar?: string }) => {
+        try {
+            const updatedUser = await authApi.updateProfile(data);
+            login(updatedUser); // Update local store
+        } catch (error) {
+            console.error(error);
+            alert('Failed to update profile');
+            throw error; // Let modal handle loading state
+        }
+    };
+
+    // Derived Logic
+    const stats = useMemo(() => {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+
+        let open = 0, dueToday = 0, overdue = 0, completed = 0;
+
+        tasks.forEach((task: Task) => {
+            if (task.status === 'completed') {
+                completed++;
+            } else {
+                open++;
+                if (task.dueDate) {
+                    const d = new Date(task.dueDate);
+                    const t = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+                    if (t === today) dueToday++;
+                    if (t < today) overdue++;
+                }
+            }
+        });
+        return { open, dueToday, overdue, completed };
+    }, [tasks]);
+
+    const filteredTasks = useMemo(() => {
+        const result = tasks.filter((task: Task) => {
+            // Tab filter
+            if (tab === 'assigned') {
+                const assignedId = typeof task.assignedTo === 'object' ? task.assignedTo?._id : task.assignedTo;
+                if (assignedId !== user?._id) return false;
+            } else {
+                const createdId = typeof task.createdBy === 'object' ? task.createdBy?._id : task.createdBy;
+                if (createdId !== user?._id) return false;
+            }
+
+            // Dropdown filters
+            if (statusFilter !== 'all' && task.status !== statusFilter) return false;
+            if (priorityFilter !== 'all' && task.priority !== priorityFilter) return false;
+
+            // Search Filter
+            if (searchQuery) {
+                const query = searchQuery.toLowerCase();
+                const titleMatch = task.title.toLowerCase().includes(query);
+                const descMatch = task.description?.toLowerCase().includes(query);
+                if (!titleMatch && !descMatch) return false;
+            }
+
+            return true;
+        });
+
+        // Sorting
+        result.sort((a: Task, b: Task) => {
+            if (sortBy === 'dueDate') {
+                if (!a.dueDate) return 1;
+                if (!b.dueDate) return -1;
+                return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+            } else if (sortBy === 'priority') {
+                const priorityWeight = { high: 3, medium: 2, low: 1 };
+                return (priorityWeight[b.priority] || 0) - (priorityWeight[a.priority] || 0);
+            } else if (sortBy === 'newest') {
+                return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            }
+            return 0;
+        });
+
+        return result;
+    }, [tasks, tab, statusFilter, priorityFilter, searchQuery, sortBy, user]);
+
+    // Critical Items (Overdue & High Priority)
+    const criticalTasks = useMemo(() => {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        return tasks.filter((t: Task) => {
+            if (t.status === 'completed') return false;
+            if (t.dueDate) {
+                const d = new Date(t.dueDate);
+                return d.getTime() < today;
+            }
+            return false;
+        }).slice(0, 3); // Take top 3
+    }, [tasks]);
+
+    if (isLoading) return <Loader />;
+
+    if (error) {
+        return (
+            <div className="flex-1 overflow-hidden">
+                <header className="h-16 shrink-0 border-b border-gray-200 dark:border-gray-800 bg-[rgb(var(--color-bg))] flex items-center justify-between px-6 lg:px-8">
+                    <h2 className="text-lg font-bold">Dashboard</h2>
+                </header>
+                <ErrorState
+                    message="Failed to load tasks"
+                    description={error instanceof Error ? error.message : undefined}
+                    onRetry={() => window.location.reload()}
+                />
+            </div>
+        );
+    }
+
+    return (
+        <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+            {/* Header */}
+            <header className="h-16 shrink-0 border-b border-gray-200 dark:border-gray-800 bg-[rgb(var(--color-bg))] flex items-center justify-between px-6 lg:px-8 z-10">
+                <button className="lg:hidden text-[#637588] dark:text-[#9da8b9]">
+                    <span className="material-symbols-outlined">menu</span>
+                </button>
+                {/* Search Bar */}
+                <div className="flex-1 max-w-xl mx-4 lg:mx-0">
+                    <div className="relative group">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span className="material-symbols-outlined text-gray-400 group-focus-within:text-[rgb(var(--color-primary))] transition-colors">search</span>
+                        </div>
+                        <input
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="block w-full pl-10 pr-3 py-2 border-none rounded-lg leading-5 bg-[#f3f4f6] dark:bg-[#1f2937] text-[#111418] dark:text-white placeholder-[#9da8b9] focus:outline-none focus:ring-2 focus:ring-primary/50 sm:text-sm transition-all"
+                            placeholder="Search tasks, projects, or tags..."
+                            type="text"
+                        />
+                    </div>
+                </div>
+                {/* Right Actions */}
+                <div className="flex items-center gap-4">
+                    <button className="relative p-2 text-[#637588] dark:text-[#9da8b9] hover:bg-[#f3f4f6] dark:hover:bg-[#1f2937] rounded-full transition-colors">
+                        <span className="material-symbols-outlined">notifications</span>
+                        <span className="absolute top-2 right-2 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#111418]"></span>
+                    </button>
+                    <button
+                        onClick={() => setIsProfileOpen(true)}
+                        className="relative size-9 rounded-full overflow-hidden border border-gray-200 dark:border-gray-700 hover:ring-2 hover:ring-primary/50 transition-all cursor-pointer"
+                    >
+                        {user?.avatar ? (
+                            <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                        ) : (
+                            <div className="w-full h-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold">
+                                {user?.username?.charAt(0).toUpperCase()}
+                            </div>
+                        )}
+                    </button>
+                    <button
+                        onClick={() => window.location.href = '/projects'}
+                        className="hidden sm:flex bg-white dark:bg-[#1e2736] border border-gray-200 dark:border-gray-700 text-slate-700 dark:text-slate-200 text-sm font-medium px-4 py-2 rounded-lg items-center gap-2 transition-colors hover:bg-gray-50 dark:hover:bg-[#28303b]"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">folder</span>
+                        <span>My Projects</span>
+                    </button>
+                    <button
+                        onClick={() => { setEditingTask(undefined); setIsModalOpen(true); }}
+                        className="hidden sm:flex bg-[rgb(var(--color-primary))] hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg items-center gap-2 transition-colors shadow-lg shadow-blue-500/20 cursor-pointer"
+                    >
+                        <span className="material-symbols-outlined text-[20px]">add</span>
+                        <span>New Task</span>
+                    </button>
+                </div>
+            </header>
+
+            {/* Scrollable Content */}
+            <div className="flex-1 overflow-y-auto p-6 lg:p-8 scroll-smooth">
+                <div className="max-w-[1200px] mx-auto flex flex-col gap-8">
+                    {/* Welcome & Headline */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 className="text-3xl font-bold tracking-tight text-[rgb(var(--color-text))]">Dashboard</h2>
+                            <p className="text-slate-500 dark:text-slate-400 mt-1">Good morning, {user?.username}. You have <span className="text-[rgb(var(--color-primary))] font-medium">{stats.dueToday} tasks due today</span>.</p>
+                        </div>
+                        <div className="text-sm text-[#637588] dark:text-[#9da8b9] bg-white dark:bg-[#1f2937] px-3 py-1.5 rounded-md border border-[#e5e7eb] dark:border-[#28303b]">
+                            <span className="font-medium">Today:</span> {new Date().toLocaleDateString()}
+                        </div>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <DashboardStats
+                        openTasks={stats.open}
+                        dueToday={stats.dueToday}
+                        overdue={stats.overdue}
+                        completed={stats.completed}
+                    />
+
+                    {/* Projects Section */}
+                    {projects && projects.length > 0 && (
+                        <section className="flex flex-col gap-4">
+                            <h3 className="text-lg font-bold text-[rgb(var(--color-text))]">Projects I belong to</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {projects.slice(0, 3).map((project: any) => (
+                                    <div
+                                        key={project._id}
+                                        onClick={() => window.location.href = `/projects/${project._id}`}
+                                        className="bg-white dark:bg-[#1e2736] p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow cursor-pointer"
+                                    >
+                                        <div className="flex justify-between items-start mb-2">
+                                            <h4 className="font-semibold text-slate-900 dark:text-white truncate">{project.title}</h4>
+                                            <span className="text-xs bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-0.5 rounded-full">
+                                                {project.owner._id === user?._id ? 'Owner' : 'Member'}
+                                            </span>
+                                        </div>
+                                        <p className="text-sm text-slate-500 line-clamp-2 mb-3 h-10">{project.description || 'No description'}</p>
+                                        <div className="flex items-center text-xs text-slate-400">
+                                            <span className="material-symbols-outlined text-[16px] mr-1">group</span>
+                                            {project.members?.length || 0} members
+                                        </div>
+                                    </div>
+                                ))}
+                                <div
+                                    onClick={() => window.location.href = '/projects'}
+                                    className="bg-slate-50 dark:bg-[#111418] p-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-[#1f2937] transition-colors cursor-pointer flex items-center justify-center text-slate-500 font-medium"
+                                >
+                                    View All Projects
+                                </div>
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Overdue Section */}
+                    {criticalTasks.length > 0 && (
+                        <section className="flex flex-col gap-4">
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="material-symbols-outlined text-red-500 filled">error</span>
+                                <h3 className="text-lg font-bold text-[rgb(var(--color-text))]">Overdue Tasks</h3>
+                            </div>
+                            <div className="bg-[rgb(var(--color-bg))] rounded-xl border border-red-200 dark:border-red-900/30 overflow-hidden shadow-sm">
+                                {criticalTasks.map((task: Task) => (
+                                    <div key={task._id} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border-b border-[#e5e7eb] dark:border-[#28303b] hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors group last:border-0">
+                                        <div className="mt-1 sm:mt-0">
+                                            <div className="size-5 rounded-full border-2 border-[#9da8b9] group-hover:border-primary cursor-pointer"></div>
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h4 className="text-sm font-semibold text-[#111418] dark:text-white truncate">{task.title}</h4>
+                                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide ${task.priority === 'high' ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300' : 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300'}`}>
+                                                    {task.priority}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-3 text-xs text-[#637588] dark:text-[#9da8b9]">
+                                                <span className="text-red-500 font-medium flex items-center gap-1"><span className="material-symbols-outlined text-[14px]">event</span> Due {new Date(task.dueDate!).toLocaleDateString()}</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 w-full sm:w-auto mt-2 sm:mt-0">
+                                            <button onClick={() => { setEditingTask(task); setIsModalOpen(true); }} className="ml-auto sm:ml-0 p-2 text-[#637588] dark:text-[#9da8b9] hover:text-[#111418] dark:hover:text-white bg-transparent hover:bg-[#f3f4f6] dark:hover:bg-[#28303b] rounded-lg">
+                                                <span className="material-symbols-outlined">edit</span>
+                                            </button>
+                                            <PermissionGuard allowedRoles={['admin']}>
+                                                <button onClick={() => handleDelete(task._id)} className="p-2 text-[#637588] dark:text-[#9da8b9] hover:text-red-500 bg-transparent hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg">
+                                                    <span className="material-symbols-outlined">delete</span>
+                                                </button>
+                                            </PermissionGuard>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Main Task View */}
+                    <section className="flex flex-col gap-4">
+                        {/* Tabs & Controls */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#e5e7eb] dark:border-[#28303b] pb-1">
+                            <div className="flex gap-6">
+                                <button
+                                    onClick={() => setTab('assigned')}
+                                    className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${tab === 'assigned' ? 'text-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-[rgb(var(--color-text))]'}`}
+                                >
+                                    My Assigned Tasks
+                                    <span className={`ml-2 text-[10px] px-1.5 py-0.5 rounded-full ${tab === 'assigned' ? 'bg-[rgb(var(--color-primary))] text-white' : 'bg-gray-200 text-gray-600'}`}>
+                                        {tasks.filter((t: Task) => (typeof t.assignedTo === 'object' ? t.assignedTo?._id : t.assignedTo) === user?._id).length}
+                                    </span>
+                                </button>
+                                <button
+                                    onClick={() => setTab('created')}
+                                    className={`pb-3 text-sm font-semibold border-b-2 transition-colors ${tab === 'created' ? 'text-[rgb(var(--color-primary))] border-[rgb(var(--color-primary))]' : 'text-slate-500 dark:text-slate-400 border-transparent hover:text-[rgb(var(--color-text))]'}`}
+                                >
+                                    Created by Me
+                                </button>
+                            </div>
+                            <div className="flex items-center gap-2 pb-2 sm:pb-0">
+                                {/* Search (already at top but can filter further here if designed so, but sticking to top bar search binding for now) */}
+
+                                {/* Filter: Sort Only */}
+                                <div className="relative">
+                                    <select
+                                        value={sortBy}
+                                        onChange={(e) => setSortBy(e.target.value as 'dueDate' | 'priority' | 'newest')}
+                                        className="appearance-none flex items-center gap-2 px-3 py-1.5 pr-8 bg-white dark:bg-[#1f2937] border border-[#e5e7eb] dark:border-[#28303b] rounded-lg text-xs font-medium text-[#111418] dark:text-white hover:bg-[#f3f4f6] dark:hover:bg-[#28303b] transition-colors focus:ring-0"
+                                    >
+                                        <option value="dueDate">Due Date</option>
+                                        <option value="priority">Priority</option>
+                                        <option value="newest">Newest</option>
+                                    </select>
+                                </div>
+
+                                {/* Filter: Status */}
+                                <div className="relative">
+                                    <select
+                                        value={statusFilter}
+                                        onChange={(e) => setStatusFilter(e.target.value)}
+                                        className="appearance-none flex items-center gap-2 px-3 py-1.5 pr-8 bg-white dark:bg-[#1f2937] border border-[#e5e7eb] dark:border-[#28303b] rounded-lg text-xs font-medium text-[#111418] dark:text-white hover:bg-[#f3f4f6] dark:hover:bg-[#28303b] transition-colors focus:ring-0"
+                                    >
+                                        <option value="all">All Status</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="in-progress">In Progress</option>
+                                        <option value="completed">Completed</option>
+                                    </select>
+                                </div>
+                                {/* Filter: Priority */}
+                                <div className="relative">
+                                    <select
+                                        value={priorityFilter}
+                                        onChange={(e) => setPriorityFilter(e.target.value)}
+                                        className="appearance-none flex items-center gap-2 px-3 py-1.5 pr-8 bg-white dark:bg-[#1f2937] border border-[#e5e7eb] dark:border-[#28303b] rounded-lg text-xs font-medium text-[#111418] dark:text-white hover:bg-[#f3f4f6] dark:hover:bg-[#28303b] transition-colors focus:ring-0"
+                                    >
+                                        <option value="all">All Priority</option>
+                                        <option value="high">High</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="low">Low</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Task List Container */}
+                        <TaskList
+                            tasks={filteredTasks}
+                            onEdit={(task) => { setEditingTask(task); setIsModalOpen(true); }}
+                            onDelete={handleDelete}
+                            onStatusUpdate={(task) => handleCreateOrUpdate({
+                                status: task.status === 'completed' ? 'pending' : 'completed',
+                            } as UpdateTaskDto)}
+                        />
+                    </section>
+                </div>
+            </div>
+
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+                    <div className="bg-[rgb(var(--color-bg))] rounded-xl shadow-xl w-full max-w-xl border border-gray-200 dark:border-gray-800 flex flex-col max-h-[90vh]">
+                        <div className="p-6 border-b border-gray-200 dark:border-gray-800">
+                            <h2 className="text-xl font-bold text-[rgb(var(--color-text))]">{editingTask ? 'Edit Task' : 'Create New Task'}</h2>
+                        </div>
+                        <TaskForm
+                            initialData={editingTask}
+                            onSubmit={handleCreateOrUpdate}
+                            onCancel={() => setIsModalOpen(false)}
+                        />
+                    </div>
+                </div>
+            )}
+
+            <ProfileModal
+                isOpen={isProfileOpen}
+                onClose={() => setIsProfileOpen(false)}
+                user={user}
+                onUpdate={handleUpdateProfile}
+            />
+        </div>
+    );
+};

@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+/* Light theme (default) */
+:root {
+    --color-bg: 255 255 255;
+    --color-text: 15 23 42;
+    /* slate-900 */
+    --color-primary: 59 130 246;
+    /* blue-500 */
+    --color-secondary: 99 102 241;
+    /* indigo-500 */
+}
+
+/* Dark theme */
+.dark {
+    --color-bg: 2 6 23;
+    /* slate-950 */
+    --color-text: 226 232 240;
+    /* slate-200 */
+    --color-primary: 96 165 250;
+    /* blue-400 */
+    --color-secondary: 129 140 248;
+    /* indigo-400 */
+}
+
+@theme {
+    --font-display: "Inter", sans-serif;
+}
+
+body {
+    background-color: rgb(var(--color-bg));
+    color: rgb(var(--color-text));
+}
+
+/* Custom scrollbar to match design */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(var(--color-bg));
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+}
