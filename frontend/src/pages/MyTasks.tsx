@@ -86,9 +86,9 @@ export const MyTasks = () => {
 
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-[rgb(var(--color-bg))] rounded-xl shadow-xl w-full max-w-xl border border-gray-200 dark:border-gray-800 flex flex-col max-h-[90vh]">
-                        <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-                            <h2 className="text-xl font-bold text-[rgb(var(--color-text))]">{editingTask ? 'Edit Task' : 'Create New Task'}</h2>
+                    <div className="bg-white dark:bg-[#1e2736] rounded-xl shadow-xl w-full max-w-xl border border-gray-200 dark:border-gray-700 flex flex-col max-h-[90vh]">
+                        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">{editingTask ? 'Edit Task' : 'Create New Task'}</h2>
                         </div>
                         <TaskForm
                             initialData={editingTask}

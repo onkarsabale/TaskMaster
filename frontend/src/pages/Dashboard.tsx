@@ -310,11 +310,11 @@ export const Dashboard = () => {
                     {/* Welcome & Headline */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
-                            <h2 className="text-3xl font-bold tracking-tight text-[rgb(var(--color-text))]">Dashboard</h2>
+                            <h2 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Dashboard</h2>
                             <p className="text-slate-500 dark:text-slate-400 mt-1">Good morning, {user?.username}. You have <span className="text-[rgb(var(--color-primary))] font-medium">{stats.dueToday} tasks due today</span>.</p>
                         </div>
-                        <div className="text-sm text-[#637588] dark:text-[#9da8b9] bg-white dark:bg-[#1f2937] px-3 py-1.5 rounded-md border border-[#e5e7eb] dark:border-[#28303b]">
-                            <span className="font-medium">Today:</span> {new Date().toLocaleDateString()}
+                        <div className="text-sm text-slate-500 dark:text-slate-400 bg-white dark:bg-[#1e2736] px-3 py-1.5 rounded-md border border-gray-200 dark:border-gray-700 shadow-sm">
+                            <span className="font-medium text-slate-700 dark:text-slate-200">Today:</span> {new Date().toLocaleDateString()}
                         </div>
                     </div>
 
@@ -329,28 +329,31 @@ export const Dashboard = () => {
                     {/* Projects Section */}
                     {projects && projects.length > 0 && (
                         <section className="flex flex-col gap-4">
-                            <h3 className="text-lg font-bold text-[rgb(var(--color-text))]">Projects I belong to</h3>
+                            <h3 className="text-lg font-bold text-slate-800 dark:text-white">Projects I belong to</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {projects.map((project: Project) => (
                                     <div
                                         key={project?._id || Math.random()}
                                         onClick={() => navigate(`/projects/${project?._id}`)}
-                                        className="bg-[rgb(var(--color-bg))] rounded-lg border border-gray-100 dark:border-gray-800 p-4 hover:shadow-md transition-shadow cursor-pointer min-w-[280px] snap-center"
+                                        className="bg-white dark:bg-[#1e2736] rounded-xl border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-all cursor-pointer min-w-[280px] snap-center group"
                                     >
                                         <div className="flex justify-between items-start mb-2">
-                                            <h3 className="font-semibold text-slate-800 dark:text-white truncate pr-2">{project?.title || 'Untitled Project'}</h3>
-                                            {project?.createdAt && (new Date().getTime() - new Date(project.createdAt).getTime() < 24 * 60 * 60 * 1000) && <span className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full font-medium">NEW</span>}
+                                            <h3 className="font-semibold text-slate-800 dark:text-white truncate pr-2 group-hover:text-[rgb(var(--color-primary))] transition-colors">{project?.title || 'Untitled Project'}</h3>
+                                            {project?.createdAt && (new Date().getTime() - new Date(project.createdAt).getTime() < 24 * 60 * 60 * 1000) && <span className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 text-[10px] px-2 py-0.5 rounded-full font-bold tracking-wide">NEW</span>}
                                         </div>
-                                        <p className="text-sm text-slate-500 dark:text-gray-400 line-clamp-2 mb-3 h-10">{project?.description || 'No description available'}</p>
-                                        <div className="flex items-center justify-between text-xs text-slate-400 dark:text-gray-500">
-                                            <span>{project?.members?.length || 0} members</span>
+                                        <p className="text-sm text-slate-500 dark:text-gray-400 line-clamp-2 mb-3 h-10 leading-relaxed">{project?.description || 'No description available'}</p>
+                                        <div className="flex items-center justify-between text-xs text-slate-400 dark:text-gray-500 pt-3 border-t border-gray-100 dark:border-gray-700">
+                                            <div className="flex items-center gap-1.5">
+                                                <span className="material-symbols-outlined text-[16px]">group</span>
+                                                <span>{project?.members?.length || 0} members</span>
+                                            </div>
                                             <span>{project?.updatedAt ? new Date(project.updatedAt).toLocaleDateString() : 'N/A'}</span>
                                         </div>
                                     </div>
                                 ))}
                                 <div
                                     onClick={() => window.location.href = '/projects'}
-                                    className="bg-slate-50 dark:bg-[#111418] p-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-[#1f2937] transition-colors cursor-pointer flex items-center justify-center text-slate-500 font-medium"
+                                    className="bg-slate-50 dark:bg-[#111418] p-4 rounded-xl border border-dashed border-gray-300 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-[#1f2937] transition-colors cursor-pointer flex items-center justify-center text-slate-500 font-medium hover:text-slate-700 dark:hover:text-slate-300"
                                 >
                                     View All Projects
                                 </div>
@@ -363,7 +366,7 @@ export const Dashboard = () => {
                         <section className="flex flex-col gap-4">
                             <div className="flex items-center gap-2 mb-1">
                                 <span className="material-symbols-outlined text-red-500 filled">error</span>
-                                <h3 className="text-lg font-bold text-[rgb(var(--color-text))]">Overdue Tasks</h3>
+                                <h3 className="text-lg font-bold text-slate-800 dark:text-white">Overdue Tasks</h3>
                             </div>
                             <div className="bg-[rgb(var(--color-bg))] rounded-xl border border-red-200 dark:border-red-900/30 overflow-hidden shadow-sm">
                                 {criticalTasks.map((task: Task) => (

@@ -11,8 +11,8 @@ export const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState<'users' | 'projects'>('users');
 
     return (
-        <div className="flex flex-col h-full bg-[rgb(var(--color-bg))]">
-            <header className="h-16 shrink-0 border-b border-gray-200 dark:border-gray-800 bg-[rgb(var(--color-bg))] flex items-center justify-between px-6 lg:px-8">
+        <div className="flex flex-col h-full bg-[#f6f7f8] dark:bg-[#101822]">
+            <header className="h-16 shrink-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-[#111418] flex items-center justify-between px-6 lg:px-8">
                 <div className="flex items-center gap-4">
                     <h2 className="text-xl font-bold">Admin Dashboard</h2>
                     <div className="flex bg-gray-100 dark:bg-[#1f2937] p-1 rounded-lg">

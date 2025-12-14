@@ -13,7 +13,7 @@ export const StatusChangeModal = ({ task, onClose, onConfirm }: StatusChangeModa
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm" onClick={onClose}>
             <div className="bg-[rgb(var(--color-bg))] rounded-xl shadow-xl w-full max-w-sm border border-gray-200 dark:border-gray-800 p-6" onClick={e => e.stopPropagation()}>
                 <h3 className="text-lg font-bold text-[rgb(var(--color-text))] mb-2">Update Status</h3>
-                <p className="text-sm text-slate-500 mb-6">Select a new status for <span className="font-medium text-[rgb(var(--color-text))]">"{task.title}"</span></p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">Select a new status for <span className="font-medium text-[rgb(var(--color-text))]">"{task.title}"</span></p>
 
                 <div className="flex flex-col gap-2">
                     {statuses.map(status => (

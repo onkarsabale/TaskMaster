@@ -16,9 +16,9 @@ export const TaskList = ({ tasks, onEdit, onDelete, onStatusUpdate }: TaskListPr
     const [statusTask, setStatusTask] = useState<Task | null>(null);
 
     return (
-        <div className="bg-[rgb(var(--color-bg))] rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col divide-y divide-gray-200 dark:divide-gray-800">
+        <div className="bg-white dark:bg-[#1e2736] rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm flex flex-col divide-y divide-gray-100 dark:divide-gray-700 overflow-hidden">
             {/* Header Row */}
-            <div className="hidden sm:flex items-center px-4 py-3 bg-gray-50 dark:bg-slate-900/50 text-xs font-medium text-gray-500 dark:text-gray-400 rounded-t-xl">
+            <div className="hidden sm:flex items-center px-4 py-3 bg-gray-50/80 dark:bg-[#111418]/50 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider backdrop-blur-sm">
                 <div className="w-8"></div>
                 <div className="flex-1">Task Name</div>
                 <div className="w-24">Priority</div>
@@ -27,7 +27,7 @@ export const TaskList = ({ tasks, onEdit, onDelete, onStatusUpdate }: TaskListPr
                 <div className="w-12"></div>
             </div>
             {tasks.length === 0 ? (
-                <div className="p-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                <div className="p-8 text-center text-sm text-slate-500 dark:text-slate-400">
                     No tasks found serving this criteria.
                 </div>
             ) : (
@@ -35,7 +35,7 @@ export const TaskList = ({ tasks, onEdit, onDelete, onStatusUpdate }: TaskListPr
                     <div
                         key={task._id}
                         onClick={() => navigate(`/tasks/${task._id}`)}
-                        className="group flex flex-col sm:flex-row sm:items-center px-4 py-4 sm:py-3 hover:bg-gray-50 dark:hover:bg-slate-900/50 transition-colors bg-[rgb(var(--color-bg))] cursor-pointer"
+                        className="group flex flex-col sm:flex-row sm:items-center px-4 py-4 sm:py-3 hover:bg-slate-50 dark:hover:bg-[#111418]/50 transition-all cursor-pointer border-l-4 border-transparent hover:border-[rgb(var(--color-primary))]"
                     >
                         <div className="hidden sm:block w-8">
                             <div

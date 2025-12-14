@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
+import { useTheme } from '../context/ThemeContext';
 
 export const Sidebar = () => {
     const { user } = useAuthStore();
+    const { theme, toggleTheme } = useTheme();
 
     return (
-        <aside className="hidden lg:flex flex-col w-64 border-r border-gray-200 dark:border-gray-800 bg-[rgb(var(--color-bg))] shrink-0 transition-all duration-300">
+        <aside className="hidden lg:flex flex-col w-64 border-r border-gray-200 dark:border-gray-800 bg-[#f8fafc] dark:bg-[#0b1121] shrink-0 transition-colors duration-300">
             <div className="p-4 flex flex-col h-full justify-between">
                 <div className="flex flex-col gap-6">
                     {/* Branding */}
@@ -24,20 +26,20 @@ export const Sidebar = () => {
                             <span className="material-symbols-outlined fill-1">dashboard</span>
                             <span className="text-sm font-medium">Dashboard</span>
                         </Link>
-                        <Link to="/projects" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[rgb(var(--color-text))] transition-colors">
+                        <Link to="/projects" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all">
                             <span className="material-symbols-outlined">folder_open</span>
                             <span className="text-sm font-medium">Projects</span>
                         </Link>
-                        <Link to="/tasks" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[rgb(var(--color-text))] transition-colors">
+                        <Link to="/tasks" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all">
                             <span className="material-symbols-outlined">check_circle</span>
                             <span className="text-sm font-medium">My Tasks</span>
                         </Link>
-                        <Link to="/team" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[rgb(var(--color-text))] transition-colors">
+                        <Link to="/team" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all">
                             <span className="material-symbols-outlined">groups</span>
                             <span className="text-sm font-medium">Team</span>
                         </Link>
                         {user?.role === 'admin' && (
-                            <Link to="/admin" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[rgb(var(--color-text))] transition-colors">
+                            <Link to="/admin" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all">
                                 <span className="material-symbols-outlined">admin_panel_settings</span>
                                 <span className="text-sm font-medium">Admin</span>
                             </Link>
@@ -46,11 +48,22 @@ export const Sidebar = () => {
                 </div>
                 {/* Bottom Actions */}
                 <div className="flex flex-col gap-1">
-                    <Link to="/settings" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[rgb(var(--color-text))] transition-colors">
+                    <button
+                        onClick={toggleTheme}
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all w-full text-left"
+                    >
+                        <span className="material-symbols-outlined">
+                            {theme === 'light' ? 'dark_mode' : 'light_mode'}
+                        </span>
+                        <span className="text-sm font-medium">
+                            {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+                        </span>
+                    </button>
+                    <Link to="/settings" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all">
                         <span className="material-symbols-outlined">settings</span>
                         <span className="text-sm font-medium">Settings</span>
                     </Link>
-                    <Link to="/support" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-[rgb(var(--color-text))] transition-colors">
+                    <Link to="/support" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all">
                         <span className="material-symbols-outlined">help</span>
                         <span className="text-sm font-medium">Support</span>
                     </Link>

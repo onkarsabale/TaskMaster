@@ -222,9 +222,9 @@ export const ProjectDetails = () => {
             {/* Modals */}
             {isTaskModalOpen && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-[rgb(var(--color-bg))] rounded-xl shadow-xl w-full max-w-xl border border-gray-200 dark:border-gray-800 flex flex-col max-h-[90vh]">
-                        <div className="p-6 border-b border-gray-200 dark:border-gray-800">
-                            <h2 className="text-xl font-bold text-[rgb(var(--color-text))]">{editingTask ? 'Edit Task' : 'Create New Task'}</h2>
+                    <div className="bg-white dark:bg-[#1e2736] rounded-xl shadow-xl w-full max-w-xl border border-gray-200 dark:border-gray-700 flex flex-col max-h-[90vh]">
+                        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white">{editingTask ? 'Edit Task' : 'Create New Task'}</h2>
                         </div>
                         <TaskForm
                             initialData={editingTask}
@@ -239,9 +239,9 @@ export const ProjectDetails = () => {
 
             {isMemberModalOpen && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-[rgb(var(--color-bg))] rounded-xl shadow-xl w-full max-w-sm border border-gray-200 dark:border-gray-800">
+                    <div className="bg-white dark:bg-[#1e2736] rounded-xl shadow-xl w-full max-w-sm border border-gray-200 dark:border-gray-700">
                         <div className="p-6">
-                            <h2 className="text-xl font-bold text-[rgb(var(--color-text))] mb-4">Add Member</h2>
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Add Member</h2>
                             <form onSubmit={handleAddMember} className="flex flex-col gap-4">
                                 <div>
                                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">User ID to Add</label>

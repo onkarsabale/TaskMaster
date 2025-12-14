@@ -17,6 +17,7 @@ import { useSocket } from './hooks/useSocket';
 import { ToastProvider } from './context/ToastContext';
 import { Layout } from './components/Layout';
 import { Outlet } from 'react-router-dom';
+import { ThemeProvider } from './context/ThemeContext';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -105,9 +106,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
+        <ThemeProvider>
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </ThemeProvider>
       </ToastProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

@@ -85,10 +85,10 @@ export const Login = () => {
             <main className="flex-1 flex flex-col items-center justify-center py-10 px-4 sm:px-6">
                 <div className="w-full max-w-[480px] flex flex-col gap-6">
                     {/* Auth Card */}
-                    <div className="bg-[rgb(var(--color-bg))] rounded-xl border border-gray-200 dark:border-gray-800 shadow-xl overflow-hidden">
+                    <div className="bg-white dark:bg-[#1e2736] rounded-xl border border-gray-200 dark:border-gray-700 shadow-xl overflow-hidden">
                         {/* Headline */}
                         <div className="pt-8 pb-2 px-8 text-center">
-                            <h1 className="text-[rgb(var(--color-text))] tracking-tight text-3xl font-bold leading-tight">
+                            <h1 className="text-slate-900 dark:text-white tracking-tight text-3xl font-bold leading-tight">
                                 {isRegistering ? 'Create an account' : 'Welcome back'}
                             </h1>
                             <p className="text-slate-500 dark:text-[#9da8b9] text-sm font-normal leading-normal pt-2">
@@ -100,7 +100,7 @@ export const Login = () => {
 
                         {/* Tabs */}
                         <div className="px-8 mt-6">
-                            <div className="flex border-b border-gray-200 dark:border-[#3b4554] w-full">
+                            <div className="flex border-b border-gray-200 dark:border-gray-700 w-full">
                                 <button
                                     onClick={() => {
                                         setIsRegistering(false);
@@ -110,7 +110,7 @@ export const Login = () => {
                                     }}
                                     className={`flex flex-col items-center justify-center border-b-[3px] pb-3 pt-4 flex-1 cursor-pointer transition-colors ${!isRegistering
                                         ? 'border-b-[rgb(var(--color-primary))] text-[rgb(var(--color-primary))]'
-                                        : 'border-b-transparent hover:border-b-gray-300 dark:hover:border-b-gray-700 text-slate-500 hover:text-[rgb(var(--color-text))]'
+                                        : 'border-b-transparent hover:border-b-gray-300 dark:hover:border-b-gray-600 text-slate-500 hover:text-slate-900 dark:hover:text-white'
                                         } `}
                                 >
                                     <p className="text-sm font-bold leading-normal tracking-[0.015em]">Login</p>
@@ -124,7 +124,7 @@ export const Login = () => {
                                     }}
                                     className={`flex flex-col items-center justify-center border-b-[3px] pb-3 pt-4 flex-1 cursor-pointer transition-colors ${isRegistering
                                         ? 'border-b-[rgb(var(--color-primary))] text-[rgb(var(--color-primary))]'
-                                        : 'border-b-transparent hover:border-b-gray-300 dark:hover:border-b-gray-700 text-slate-500 hover:text-[rgb(var(--color-text))]'
+                                        : 'border-b-transparent hover:border-b-gray-300 dark:hover:border-b-gray-600 text-slate-500 hover:text-slate-900 dark:hover:text-white'
                                         } `}
                                 >
                                     <p className="text-sm font-bold leading-normal tracking-[0.015em]">Register</p>
@@ -141,9 +141,9 @@ export const Login = () => {
                                     <div className="relative">
                                         <input
                                             {...register('username')}
-                                            className={`form-input flex w-full rounded-lg border bg-[rgb(var(--color-bg))] focus:ring-1 h-12 pl-11 pr-4 text-[rgb(var(--color-text))] placeholder:text-slate-400 text-sm transition-colors ${errors.username
+                                            className={`form-input flex w-full rounded-lg border bg-gray-50 dark:bg-[#111418] focus:ring-1 h-12 pl-11 pr-4 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#9da8b9] text-sm transition-colors ${errors.username
                                                 ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                                                : 'border-gray-300 dark:border-gray-700 focus:border-[rgb(var(--color-primary))] focus:ring-[rgb(var(--color-primary))]'
+                                                : 'border-gray-200 dark:border-gray-600 focus:border-[rgb(var(--color-primary))] focus:ring-[rgb(var(--color-primary))]'
                                                 } `}
                                             placeholder="Jane Doe"
                                             type="text"
@@ -162,7 +162,7 @@ export const Login = () => {
                                         {...register('email')}
                                         className={`form-input flex w-full rounded-lg border bg-gray-50 dark:bg-[#111418] focus:ring-1 h-12 pl-11 pr-4 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#9da8b9] text-sm transition-colors ${errors.email
                                             ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                                            : 'border-gray-300 dark:border-[#3b4554] focus:border-primary focus:ring-primary'
+                                            : 'border-gray-200 dark:border-gray-600 focus:border-[rgb(var(--color-primary))] focus:ring-[rgb(var(--color-primary))]'
                                             } `}
                                         placeholder="you@example.com"
                                         type="email"
@@ -178,9 +178,9 @@ export const Login = () => {
                                 <div className="relative">
                                     <input
                                         {...register('password')}
-                                        className={`form-input flex w-full rounded-lg border bg-[rgb(var(--color-bg))] focus:ring-1 h-12 pl-11 pr-11 text-[rgb(var(--color-text))] placeholder:text-slate-400 text-sm transition-colors ${errors.password
+                                        className={`form-input flex w-full rounded-lg border bg-gray-50 dark:bg-[#111418] focus:ring-1 h-12 pl-11 pr-11 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-[#9da8b9] text-sm transition-colors ${errors.password
                                             ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
-                                            : 'border-gray-300 dark:border-gray-700 focus:border-[rgb(var(--color-primary))] focus:ring-[rgb(var(--color-primary))]'
+                                            : 'border-gray-200 dark:border-gray-600 focus:border-[rgb(var(--color-primary))] focus:ring-[rgb(var(--color-primary))]'
                                             } `}
                                         placeholder="Create a password"
                                         type="password"
