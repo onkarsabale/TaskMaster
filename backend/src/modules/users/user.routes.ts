@@ -5,6 +5,7 @@ import * as userController from './user.controller.js';
 const router = Router();
 
 router.patch('/profile', protect, userController.updateProfile);
+router.get('/search', protect, userController.searchUsers);
 
 // Admin Routes
 router.get('/', protect, authorize('admin'), userController.getUsers);

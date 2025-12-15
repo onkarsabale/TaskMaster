@@ -1,10 +1,11 @@
 import bcrypt from 'bcryptjs';
 import * as authRepo from './auth.repository.js';
 import { generateToken } from '../../utils/jwt.js';
+import { AppError } from '../../utils/AppError.js';
 export const register = async (res, data) => {
     const existingUser = await authRepo.findUserByEmail(data.email);
     if (existingUser) {
-        throw new Error('User already exists');
+        throw new AppError('User already exists', 409);
     }
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(data.password, salt);
@@ -20,7 +21,7 @@ export const register = async (res, data) => {
 export const login = async (res, data) => {
     const user = await authRepo.findUserByEmail(data.email);
     if (!user || !(await bcrypt.compare(data.password, user.passwordHash))) {
-        throw new Error('Invalid email or password');
+        throw new AppError('Invalid email or password', 401);
     }
     generateToken(res, user._id, user.role);
     return {

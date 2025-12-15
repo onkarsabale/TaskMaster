@@ -123,6 +123,27 @@ export const ProfileModal = ({ isOpen, onClose, user, onUpdate }: ProfileModalPr
                                 </div>
                             </div>
 
+                            {/* Read-only User ID */}
+                            <div className="flex flex-col gap-1.5">
+                                <span className="text-sm font-medium text-[rgb(var(--color-text))]">User ID</span>
+                                <div className="h-10 px-3 flex items-center justify-between rounded-lg border border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 text-sm text-slate-500 font-mono">
+                                    <span className="truncate">{user?._id}</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(user?._id || '');
+                                            // Ideally we would show a toast here, but we'd need to inject useToast or pass a prop.
+                                            // For simplicity in this modal, we'll just rely on the user knowing they clicked it or button feedback effect.
+                                            alert('ID copied to clipboard');
+                                        }}
+                                        className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                                        title="Copy ID"
+                                    >
+                                        <span className="material-symbols-outlined text-[16px]">content_copy</span>
+                                    </button>
+                                </div>
+                            </div>
+
                             <div className="flex justify-end gap-3 mt-2">
                                 <button
                                     type="button"

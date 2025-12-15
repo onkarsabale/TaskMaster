@@ -1,5 +1,6 @@
 import * as projectService from './project.service.js';
 import { Project } from './project.model.js';
+import * as notificationService from '../notifications/notification.service.js';
 export const createProject = async (req, res) => {
     try {
         const { title, description } = req.body;
@@ -76,6 +77,28 @@ export const addMember = async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ message: 'Error adding member', error });
+    }
+};
+export const inviteMember = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { email } = req.body;
+        // @ts-ignore
+        const senderId = req.user._id;
+        if (!id)
+            return res.status(400).json({ message: 'Project ID is required' });
+        if (!email)
+            return res.status(400).json({ message: 'Email is required' });
+        const result = await projectService.inviteUserToProject(id, email, senderId);
+        res.json(result);
+    }
+    catch (error) {
+        if (error instanceof Error && error.statusCode) {
+            res.status(error.statusCode).json({ message: error.message });
+        }
+        else {
+            res.status(500).json({ message: 'Error sending invitation', error });
+        }
     }
 };
 //# sourceMappingURL=project.controller.js.map

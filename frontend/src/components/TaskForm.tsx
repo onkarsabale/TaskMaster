@@ -28,7 +28,7 @@ interface TaskFormProps {
     projects?: import('../types/project').Project[]; // Passed when creating from Dashboard
 }
 
-export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, projects }: TaskFormProps) => {
+export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, projects, projectId }: TaskFormProps) => {
     const { user } = useAuthStore();
     const isEditMode = !!initialData;
     const isUser = user?.role === 'user';
@@ -43,8 +43,14 @@ export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, proj
             status: initialData?.status || 'pending',
             priority: initialData?.priority || 'medium',
             dueDate: initialData?.dueDate ? new Date(initialData.dueDate).toISOString().split('T')[0] : '',
-            assignedTo: typeof initialData?.assignedTo === 'object' ? initialData.assignedTo.email : (initialData?.assignedTo as string) || '',
-            projectId: typeof initialData?.project === 'string' ? initialData.project : (initialData as Task & { projectId?: string })?.projectId || (projects && projects.length > 0 ? projects[0]._id : ''),
+            assignedTo: typeof initialData?.assignedTo === 'object' ? (initialData.assignedTo as { _id: string })._id : (initialData?.assignedTo as string) || '',
+            projectId: (() => {
+                if (initialData) {
+                    const p = (initialData as Task & { projectId?: string }).projectId || (initialData as Task & { project?: { _id: string } | string }).project;
+                    return (typeof p === 'object' && p !== null) ? (p as { _id: string })._id : (p as string) || '';
+                }
+                return projectId || (projects && projects.length > 0 ? projects[0]._id : '');
+            })(),
         },
     });
 

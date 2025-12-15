@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import * as projectService from './project.service.js';
 import { Project } from './project.model.js';
+import * as notificationService from '../notifications/notification.service.js';
 
 export const createProject = async (req: Request, res: Response) => {
     try {
@@ -78,5 +79,26 @@ export const addMember = async (req: Request, res: Response) => {
         res.json(project);
     } catch (error) {
         res.status(500).json({ message: 'Error adding member', error });
+    }
+};
+
+export const inviteMember = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { email } = req.body;
+        // @ts-ignore
+        const senderId = req.user._id;
+
+        if (!id) return res.status(400).json({ message: 'Project ID is required' });
+        if (!email) return res.status(400).json({ message: 'Email is required' });
+
+        const result = await projectService.inviteUserToProject(id, email, senderId);
+        res.json(result);
+    } catch (error) {
+        if (error instanceof Error && (error as any).statusCode) {
+            res.status((error as any).statusCode).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: 'Error sending invitation', error });
+        }
     }
 };

@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useProject, useAddMember } from '../hooks/useProjects';
+import { useProject, useInviteMember } from '../hooks/useProjects';
 import { useTasks, useCreateTask, useUpdateTask, useDeleteTask } from '../hooks/useTasks';
 import { Loader } from '../components/Loader';
 import { ErrorState } from '../components/ErrorState';
@@ -7,6 +7,7 @@ import { useAuthStore } from '../store/auth.store';
 import { useState, useMemo, useEffect } from 'react';
 import { TaskList } from '../components/TaskList';
 import { TaskForm } from '../components/TaskForm';
+import { UserSearch } from '../components/UserSearch';
 import { joinProjectRoom, leaveProjectRoom } from '../hooks/useSocket';
 import type { Task, CreateTaskDto, UpdateTaskDto } from '../types/task';
 import type { ProjectMember } from '../types/project';
@@ -36,13 +37,12 @@ export const ProjectDetails = () => {
     const createTaskMutation = useCreateTask();
     const updateTaskMutation = useUpdateTask();
     const deleteTaskMutation = useDeleteTask();
-    const addMemberMutation = useAddMember();
+    const inviteMemberMutation = useInviteMember();
 
     // UI States
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
     const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
-    const [newMemberId, setNewMemberId] = useState('');
 
     // Derived State
     const myMemberInfo = useMemo(() =>
@@ -51,10 +51,13 @@ export const ProjectDetails = () => {
 
     const isManager = user?.role === 'admin' || project?.owner._id === user?._id || myMemberInfo?.role === 'project_manager';
 
-    const handleCreateOrUpdateTask = async (data: CreateTaskDto | UpdateTaskDto, taskId?: string) => {
+    const handleCreateOrUpdateTask = async (data: CreateTaskDto | UpdateTaskDto, taskIdOrEvent?: string | unknown) => {
         try {
-            if (taskId || editingTask) {
-                await updateTaskMutation.mutateAsync({ id: taskId || editingTask!._id, data });
+            const explicitId = typeof taskIdOrEvent === 'string' ? taskIdOrEvent : undefined;
+            const idToUpdate = explicitId || editingTask?._id;
+
+            if (idToUpdate) {
+                await updateTaskMutation.mutateAsync({ id: idToUpdate, data });
             } else {
                 // Ensure projectId is attached
                 await createTaskMutation.mutateAsync({ ...data, projectId: id } as CreateTaskDto);
@@ -68,23 +71,12 @@ export const ProjectDetails = () => {
     };
 
     const handleDeleteTask = async (taskId: string) => {
-        if (!isManager) return;
+        // Permission checked by backend and TaskList button
         if (confirm('Delete this task?')) {
             await deleteTaskMutation.mutateAsync(taskId);
         }
     };
 
-    const handleAddMember = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!newMemberId) return;
-        addMemberMutation.mutate({ projectId: id!, userId: newMemberId, role: 'project_member' }, {
-            onSuccess: () => {
-                setIsMemberModalOpen(false);
-                setNewMemberId('');
-            },
-            onError: () => alert('Failed to add member (User ID might be invalid)')
-        });
-    };
 
     if (isProjectLoading || isTasksLoading) return <Loader />;
 
@@ -178,6 +170,7 @@ export const ProjectDetails = () => {
                         ) : (
                             <TaskList
                                 tasks={tasks}
+                                projects={project ? [project] : []}
                                 onEdit={(task) => { setEditingTask(task); setIsTaskModalOpen(true); }}
                                 onDelete={handleDeleteTask}
                                 onStatusUpdate={(task, newStatus) => handleCreateOrUpdateTask({
@@ -239,38 +232,37 @@ export const ProjectDetails = () => {
 
             {isMemberModalOpen && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-[#1e2736] rounded-xl shadow-xl w-full max-w-sm border border-gray-200 dark:border-gray-700">
+                    <div className="bg-white dark:bg-[#1e2736] rounded-xl shadow-xl w-full max-w-md border border-gray-200 dark:border-gray-700">
                         <div className="p-6">
-                            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Add Member</h2>
-                            <form onSubmit={handleAddMember} className="flex flex-col gap-4">
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">Invite Member</h2>
+                            <div className="flex flex-col gap-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">User ID to Add</label>
-                                    <input
-                                        type="text"
-                                        value={newMemberId}
-                                        onChange={(e) => setNewMemberId(e.target.value)}
-                                        placeholder="Enter user ID..."
-                                        className="w-full px-3 py-2 border rounded-lg dark:bg-[#111418] dark:border-gray-600 dark:text-white"
-                                        required
+                                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Search User</label>
+                                    <UserSearch
+                                        onSelect={(user) => {
+                                            if (confirm(`Invite ${user.username} to this project?`)) {
+                                                inviteMemberMutation.mutate({ projectId: id!, email: user.email });
+                                                // Don't close immediately if we want to allow multiple invites, 
+                                                // but for now let's keep it simple or maybe just clear selection inside search
+                                                // Recent change in UserSearch doesn't clear onSelect, but the card button suggests action.
+                                                // Let's close modal for now to be safe.
+                                                setIsMemberModalOpen(false);
+                                            }
+                                        }}
+                                        placeholder="Search by email address..."
                                     />
-                                    <p className="text-xs text-slate-500 mt-1">Temporary: Enter a User ID directly.</p>
+                                    <p className="text-xs text-slate-500 mt-2">Select a user to immediately send an invitation.</p>
                                 </div>
-                                <div className="flex justify-end gap-2">
+                                <div className="flex justify-end gap-2 mt-2">
                                     <button
                                         type="button"
                                         onClick={() => setIsMemberModalOpen(false)}
-                                        className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg"
+                                        className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm font-medium"
                                     >
                                         Cancel
                                     </button>
-                                    <button
-                                        type="submit"
-                                        className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 rounded-lg"
-                                    >
-                                        Add Member
-                                    </button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>

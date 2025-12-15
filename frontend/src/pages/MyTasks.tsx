@@ -62,7 +62,7 @@ export const MyTasks = () => {
             </header>
 
             <div className="flex-1 overflow-y-auto p-6">
-                <div className="max-w-5xl mx-auto">
+                <div className="max-w-5xl mx-auto space-y-8">
                     {tasks.length === 0 ? (
                         <div className="text-center py-12 bg-white dark:bg-[#1e2736] rounded-xl border border-dashed border-gray-300 dark:border-gray-700">
                             <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-4 text-blue-500">
@@ -72,14 +72,40 @@ export const MyTasks = () => {
                             <p className="text-slate-500 max-w-sm mx-auto">You're all caught up! Create a new task or ask your manager to assign you one.</p>
                         </div>
                     ) : (
-                        <TaskList
-                            tasks={tasks}
-                            onEdit={(task) => { setEditingTask(task); setIsModalOpen(true); }}
-                            onDelete={handleDelete}
-                            onStatusUpdate={(task, newStatus) => handleCreateOrUpdate({
-                                status: (newStatus || (task.status === 'completed' ? 'pending' : 'completed')) as Task['status'],
-                            } as UpdateTaskDto, task._id)}
-                        />
+                        (Object.entries(tasks.reduce((acc: Record<string, Task[]>, task: Task) => {
+                            // Extract project ID safely (handle both string ID and populated object)
+                            const projectId = typeof task.project === 'object' && task.project !== null
+                                ? (task.project as { _id: string })._id
+                                : task.project || 'unassigned';
+
+                            if (!acc[projectId]) acc[projectId] = [];
+                            acc[projectId].push(task);
+                            return acc;
+                        }, {} as Record<string, Task[]>)) as [string, Task[]][]).map(([projectId, projectTasks]) => {
+                            const project = projects.find(p => p._id === projectId);
+                            const projectTitle = project ? project.title : (projectId === 'unassigned' ? 'Unassigned' : 'Unknown Project');
+
+                            return (
+                                <div key={projectId} className="flex flex-col gap-3">
+                                    <div className="flex items-center gap-2 px-1">
+                                        <span className="material-symbols-outlined text-slate-400">folder</span>
+                                        <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200">{projectTitle}</h2>
+                                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
+                                            {projectTasks.length}
+                                        </span>
+                                    </div>
+                                    <TaskList
+                                        tasks={projectTasks}
+                                        projects={projects}
+                                        onEdit={(task) => { setEditingTask(task); setIsModalOpen(true); }}
+                                        onDelete={handleDelete}
+                                        onStatusUpdate={(task, newStatus) => handleCreateOrUpdate({
+                                            status: (newStatus || (task.status === 'completed' ? 'pending' : 'completed')) as Task['status'],
+                                        } as UpdateTaskDto, task._id)}
+                                    />
+                                </div>
+                            );
+                        })
                     )}
                 </div>
             </div>

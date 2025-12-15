@@ -23,6 +23,22 @@ export const updateProfile = async (req: Request, res: Response, next: NextFunct
     }
 };
 
+export const searchUsers = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const query = req.query.q as string;
+        const type = req.query.type as 'all' | 'email' | 'username' || 'all';
+
+        if (!query) return res.json([]);
+
+        // Dynamic import to avoid circular dependency issues if any, or just direct import if fine.
+        // Importing here assuming repository is safe.
+        const users = await import('./user.repository.js').then(r => r.findUsers(query, type));
+        res.json(users);
+    } catch (error) {
+        next(error);
+    }
+};
+
 // Admin: Get all users
 export const getUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {

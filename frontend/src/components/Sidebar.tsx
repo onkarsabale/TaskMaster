@@ -1,10 +1,20 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
 import { useTheme } from '../context/ThemeContext';
 
 export const Sidebar = () => {
     const { user } = useAuthStore();
     const { theme, toggleTheme } = useTheme();
+    const location = useLocation();
+
+    const getLinkClass = (path: string) => {
+        const isActive = location.pathname === path;
+        const baseClass = "flex items-center gap-3 px-3 py-2 rounded-lg transition-all";
+        const activeClass = "bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] font-medium shadow-none";
+        const inactiveClass = "text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm font-medium";
+
+        return `${baseClass} ${isActive ? activeClass : inactiveClass}`;
+    };
 
     return (
         <aside className="hidden lg:flex flex-col w-64 border-r border-gray-200 dark:border-gray-800 bg-[#f8fafc] dark:bg-[#0b1121] shrink-0 transition-colors duration-300">
@@ -22,26 +32,26 @@ export const Sidebar = () => {
                     </div>
                     {/* Navigation */}
                     <nav className="flex flex-col gap-1">
-                        <Link to="/" className="flex items-center gap-3 px-3 py-2 rounded-lg bg-[rgb(var(--color-primary))]/10 text-[rgb(var(--color-primary))] group transition-colors">
-                            <span className="material-symbols-outlined fill-1">dashboard</span>
-                            <span className="text-sm font-medium">Dashboard</span>
+                        <Link to="/dashboard" className={getLinkClass('/dashboard')}>
+                            <span className={`material-symbols-outlined ${location.pathname === '/dashboard' ? 'fill-1' : ''}`}>dashboard</span>
+                            <span className="text-sm">Dashboard</span>
                         </Link>
-                        <Link to="/projects" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all">
+                        <Link to="/projects" className={getLinkClass('/projects')}>
                             <span className="material-symbols-outlined">folder_open</span>
-                            <span className="text-sm font-medium">Projects</span>
+                            <span className="text-sm">Projects</span>
                         </Link>
-                        <Link to="/tasks" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all">
+                        <Link to="/tasks" className={getLinkClass('/tasks')}>
                             <span className="material-symbols-outlined">check_circle</span>
-                            <span className="text-sm font-medium">My Tasks</span>
+                            <span className="text-sm">My Tasks</span>
                         </Link>
-                        <Link to="/team" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all">
+                        <Link to="/team" className={getLinkClass('/team')}>
                             <span className="material-symbols-outlined">groups</span>
-                            <span className="text-sm font-medium">Team</span>
+                            <span className="text-sm">Team</span>
                         </Link>
                         {user?.role === 'admin' && (
-                            <Link to="/admin" className="flex items-center gap-3 px-3 py-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-white dark:hover:bg-[#1e2736] hover:text-[rgb(var(--color-primary))] hover:shadow-sm transition-all">
+                            <Link to="/admin" className={getLinkClass('/admin')}>
                                 <span className="material-symbols-outlined">admin_panel_settings</span>
-                                <span className="text-sm font-medium">Admin</span>
+                                <span className="text-sm">Admin</span>
                             </Link>
                         )}
                     </nav>

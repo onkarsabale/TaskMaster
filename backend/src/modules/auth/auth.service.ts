@@ -3,11 +3,12 @@ import type { Response } from 'express';
 import * as authRepo from './auth.repository.js';
 import type { RegisterDto, LoginDto } from './auth.dto.js';
 import { generateToken } from '../../utils/jwt.js';
+import { AppError } from '../../utils/AppError.js';
 
 export const register = async (res: Response, data: RegisterDto) => {
     const existingUser = await authRepo.findUserByEmail(data.email);
     if (existingUser) {
-        throw new Error('User already exists');
+        throw new AppError('User already exists', 409);
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -28,7 +29,7 @@ export const login = async (res: Response, data: LoginDto) => {
     const user = await authRepo.findUserByEmail(data.email);
 
     if (!user || !(await bcrypt.compare(data.password, user.passwordHash))) {
-        throw new Error('Invalid email or password');
+        throw new AppError('Invalid email or password', 401);
     }
 
     generateToken(res, (user._id as unknown) as string, user.role);

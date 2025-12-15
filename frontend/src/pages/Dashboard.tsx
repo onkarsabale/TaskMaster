@@ -14,10 +14,13 @@ import { ErrorState } from '../components/ErrorState';
 import type { CreateTaskDto, UpdateTaskDto } from '../types/task';
 import { ProfileModal } from '../components/ProfileModal';
 import * as authApi from '../api/auth.api';
+import { useToast } from '../hooks/useToast';
 import type { Project } from '../types/project';
+import { NotificationDropdown } from '../components/NotificationDropdown';
 
 export const Dashboard = () => {
     const navigate = useNavigate();
+    const { showToast } = useToast();
     // React Query Hooks
     const { data: tasks = [], isLoading, error } = useTasks();
     const { data: projects = [] } = useProjects();
@@ -53,10 +56,15 @@ export const Dashboard = () => {
     // For now, let's trust React Query's refetch on invalidation.
     // The socket integration step will handle the invalidation trigger.
 
-    const handleCreateOrUpdate = async (data: CreateTaskDto | UpdateTaskDto, taskId?: string) => {
+    const handleCreateOrUpdate = async (data: CreateTaskDto | UpdateTaskDto, taskIdOrEvent?: string | unknown) => {
         try {
-            if (taskId || editingTask) {
-                await updateTaskMutation.mutateAsync({ id: taskId || editingTask!._id, data });
+            // Check if second arg is a string ID (passed from TaskList)
+            // If it's an event (from TaskForm match), ignore it.
+            const explicitId = typeof taskIdOrEvent === 'string' ? taskIdOrEvent : undefined;
+            const idToUpdate = explicitId || editingTask?._id;
+
+            if (idToUpdate) {
+                await updateTaskMutation.mutateAsync({ id: idToUpdate, data });
             } else {
                 await createTaskMutation.mutateAsync(data as CreateTaskDto);
             }
@@ -90,11 +98,8 @@ export const Dashboard = () => {
     };
 
     const handleDelete = async (id: string) => {
-        if (user?.role !== 'admin') {
-            alert('Only Admins can delete tasks.');
-            return;
-        }
-        if (confirm('Are you sure?')) {
+        // Permission check handled by backend and TaskList button visibility
+        if (confirm('Are you sure you want to delete this task?')) {
             await deleteTaskMutation.mutateAsync(id);
         }
     };
@@ -224,10 +229,7 @@ export const Dashboard = () => {
                 </div>
                 {/* Right Actions */}
                 <div className="flex items-center gap-4">
-                    <button className="relative p-2 text-[#637588] dark:text-[#9da8b9] hover:bg-[#f3f4f6] dark:hover:bg-[#1f2937] rounded-full transition-colors">
-                        <span className="material-symbols-outlined">notifications</span>
-                        <span className="absolute top-2 right-2 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-[#111418]"></span>
-                    </button>
+                    <NotificationDropdown />
                     <div className="relative">
                         <button
                             onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
@@ -253,6 +255,21 @@ export const Dashboard = () => {
                                     <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700">
                                         <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{user?.username}</p>
                                         <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                                        <div className="flex items-center gap-1 mt-1 bg-slate-100 dark:bg-slate-800 rounded px-1.5 py-0.5 max-w-fit">
+                                            <span className="text-[10px] text-slate-400 font-mono">ID:</span>
+                                            <span className="text-[10px] text-slate-600 dark:text-slate-300 font-mono truncate max-w-[120px]">{user?._id}</span>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    navigator.clipboard.writeText(user?._id || '');
+                                                    showToast('ID copied to clipboard', 'success');
+                                                }}
+                                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                                title="Copy ID"
+                                            >
+                                                <span className="material-symbols-outlined text-[12px]">content_copy</span>
+                                            </button>
+                                        </div>
                                     </div>
                                     <button
                                         onClick={() => {
@@ -295,7 +312,14 @@ export const Dashboard = () => {
                         </button>
                     )}
                     <button
-                        onClick={() => { setEditingTask(undefined); setIsModalOpen(true); }}
+                        onClick={() => {
+                            if (!projects || projects.length === 0) {
+                                showToast('Please create a project first', 'error', 'You simply cannot add a task without a project.');
+                                return;
+                            }
+                            setEditingTask(undefined);
+                            setIsModalOpen(true);
+                        }}
                         className="hidden sm:flex bg-[rgb(var(--color-primary))] hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg items-center gap-2 transition-colors shadow-lg shadow-blue-500/20 cursor-pointer"
                     >
                         <span className="material-symbols-outlined text-[20px]">add</span>
@@ -470,6 +494,7 @@ export const Dashboard = () => {
                         {/* Task List Container */}
                         <TaskList
                             tasks={filteredTasks}
+                            projects={projects}
                             onEdit={(task) => { setEditingTask(task); setIsModalOpen(true); }}
                             onDelete={handleDelete}
                             onStatusUpdate={(task, newStatus) => handleCreateOrUpdate({

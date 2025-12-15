@@ -210,8 +210,12 @@ export const deleteTask = async (req: Request, res: Response, next: NextFunction
 
         const member = project.members.find(m => m.user.toString() === req.user!._id.toString());
 
-        if (!member || member.role !== 'project_manager') {
-            return res.status(403).json({ message: 'Only Project Managers can delete tasks' });
+        // Allow if Project Manager OR Task Creator
+        const isProjectManager = member?.role === 'project_manager';
+        const isCreator = task.createdBy.toString() === req.user!._id.toString();
+
+        if (!isProjectManager && !isCreator) {
+            return res.status(403).json({ message: 'Only Project Managers or the Task Creator can delete tasks' });
         }
 
         await taskService.deleteTask(taskId, req.user);
