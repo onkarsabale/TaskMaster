@@ -4,18 +4,20 @@ export const findUserById = async (id) => {
 };
 export const findUsers = async (query, field = 'all') => {
     let searchCriteria = {};
+    const regex = new RegExp(`^${query}`, 'i'); // Starts with query
     if (field === 'email') {
-        searchCriteria = { email: { $regex: query, $options: 'i' } };
+        searchCriteria = { email: regex, role: { $ne: 'admin' } };
     }
     else if (field === 'username') {
-        searchCriteria = { username: { $regex: query, $options: 'i' } };
+        searchCriteria = { username: regex, role: { $ne: 'admin' } };
     }
     else {
         searchCriteria = {
             $or: [
-                { username: { $regex: query, $options: 'i' } },
-                { email: { $regex: query, $options: 'i' } }
-            ]
+                { username: regex },
+                { email: regex }
+            ],
+            role: { $ne: 'admin' }
         };
     }
     return await User.find(searchCriteria).select('username email avatar _id').limit(10);

@@ -16,3 +16,7 @@ export const respondToInvite = async (id: string, action: 'accept' | 'reject'): 
     const { data } = await api.post(`/notifications/${id}/respond`, { action });
     return data;
 };
+
+export const clearNotifications = async (): Promise<void> => {
+    await api.delete('/notifications');
+};

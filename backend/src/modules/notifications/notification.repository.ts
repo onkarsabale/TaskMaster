@@ -25,3 +25,7 @@ export const updateStatus = async (id: string, status: 'accepted' | 'rejected') 
 export const findById = async (id: string) => {
     return await Notification.findById(id);
 };
+
+export const deleteAll = async (userId: string) => {
+    return await Notification.deleteMany({ recipient: userId });
+};

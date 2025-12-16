@@ -32,3 +32,13 @@ export const useRespondToInvite = () => {
         },
     });
 };
+
+export const useClearNotifications = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: notificationApi.clearNotifications,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });
+        },
+    });
+};

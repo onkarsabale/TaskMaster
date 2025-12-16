@@ -16,6 +16,10 @@ export const markAsRead = async (id: string, userId: string) => {
     return await notificationRepo.markAsRead(id);
 };
 
+export const clearAll = async (userId: string) => {
+    return await notificationRepo.deleteAll(userId);
+};
+
 export const respondToInvite = async (id: string, action: 'accept' | 'reject', userId: string) => {
     const notification = await notificationRepo.findById(id);
     if (!notification) throw new AppError('Notification not found', 404);

@@ -59,6 +59,9 @@ export const useSocket = () => {
             socket.connect();
         }
 
+        // Join User Room
+        socket.emit('join:user', user._id);
+
         // Cache Optimizations & Event Handlers
         const handleTaskCreated = () => {
             // Invalidate queries to be safe across project lists
@@ -76,9 +79,15 @@ export const useSocket = () => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
         };
 
+        const handleNewNotification = (data: any) => {
+            showToast(data.message || 'New notification received', 'info');
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });
+        };
+
         socket.on('task:created', handleTaskCreated);
         socket.on('task:updated', handleTaskUpdated);
         socket.on('notification:assigned', handleNotificationAssigned);
+        socket.on('notification:new', handleNewNotification);
 
         return () => {
             // Cleanup listeners on unmount (or re-run)
@@ -86,6 +95,7 @@ export const useSocket = () => {
                 socket.off('task:created', handleTaskCreated);
                 socket.off('task:updated', handleTaskUpdated);
                 socket.off('notification:assigned', handleNotificationAssigned);
+                socket.off('notification:new', handleNewNotification);
             }
         };
     }, [isAuthenticated, user, queryClient, showToast]);

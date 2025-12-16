@@ -192,21 +192,29 @@ export const ProjectDetails = () => {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="font-medium text-sm text-slate-900 dark:text-white truncate">{project.owner.username}</div>
-                                    <div className="text-xs text-purple-600 dark:text-purple-400">Owner</div>
+                                    <div className="text-xs text-purple-600 dark:text-purple-400">
+                                        {project.members.some((m: ProjectMember) => m.user._id === project.owner._id && m.role === 'project_manager')
+                                            ? 'Owner, Project Manager'
+                                            : 'Owner'}
+                                    </div>
                                 </div>
                             </div>
 
-                            {project.members.map((member: ProjectMember) => (
-                                <div key={member.user._id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-[#1e2736] transition-colors">
-                                    <div className="size-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-xs">
-                                        {member.user.username.slice(0, 2).toUpperCase()}
+                            {project.members
+                                .filter((member: ProjectMember) => member.user._id !== project.owner._id)
+                                .map((member: ProjectMember) => (
+                                    <div key={member.user._id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-[#1e2736] transition-colors">
+                                        <div className="size-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold text-xs">
+                                            {member.user.username.slice(0, 2).toUpperCase()}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="font-medium text-sm text-slate-900 dark:text-white truncate">{member.user.username}</div>
+                                            <div className={`text-xs capitalize ${member.role === 'project_manager' ? 'text-purple-600 dark:text-purple-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                                                {member.role === 'project_manager' ? 'Project Manager' : 'Team Member'}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="font-medium text-sm text-slate-900 dark:text-white truncate">{member.user.username}</div>
-                                        <div className="text-xs text-slate-500 dark:text-slate-400 capitalize">{member.role.replace('_', ' ')}</div>
-                                    </div>
-                                </div>
-                            ))}
+                                ))}
                         </div>
                     </div>
                 </div>
