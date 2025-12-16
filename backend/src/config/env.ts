@@ -8,7 +8,8 @@ const envSchema = z.object({
     MONGO_URI: z.string().min(1, 'MONGO_URI is required'),
     JWT_SECRET: z.string().min(1, 'JWT_SECRET is required'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-    CLIENT_URL: z.string().default('http://localhost:5173'),
+    // CLIENT_URL: z.string().default('http://localhost:5173'),
+    CLIENT_URL: z.string().default('https://task-master-sable-eight.vercel.app'), //for production
 });
 
 const envParsed = envSchema.safeParse(process.env);
