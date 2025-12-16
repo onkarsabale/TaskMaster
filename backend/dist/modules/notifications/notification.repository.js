@@ -19,4 +19,7 @@ export const updateStatus = async (id, status) => {
 export const findById = async (id) => {
     return await Notification.findById(id);
 };
+export const deleteAll = async (userId) => {
+    return await Notification.deleteMany({ recipient: userId });
+};
 //# sourceMappingURL=notification.repository.js.map

@@ -13,6 +13,9 @@ export const markAsRead = async (id, userId) => {
         throw new AppError('Unauthorized', 403);
     return await notificationRepo.markAsRead(id);
 };
+export const clearAll = async (userId) => {
+    return await notificationRepo.deleteAll(userId);
+};
 export const respondToInvite = async (id, action, userId) => {
     const notification = await notificationRepo.findById(id);
     if (!notification)

@@ -3,7 +3,7 @@ import { io, Socket } from 'socket.io-client';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '../store/auth.store';
 import { useToast } from '../hooks/useToast';
-import type { Task } from '../types';
+import type { Task, Notification } from '../types';
 
 
 
@@ -79,7 +79,7 @@ export const useSocket = () => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
         };
 
-        const handleNewNotification = (data: any) => {
+        const handleNewNotification = (data: Notification) => {
             showToast(data.message || 'New notification received', 'info');
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
         };

@@ -17,6 +17,15 @@ export const markRead = async (req, res, next) => {
         next(error);
     }
 };
+export const clearNotifications = async (req, res, next) => {
+    try {
+        await notificationService.clearAll(req.user._id.toString());
+        res.status(204).send();
+    }
+    catch (error) {
+        next(error);
+    }
+};
 export const respondToInvite = async (req, res, next) => {
     try {
         const { action } = req.body; // 'accept' | 'reject'

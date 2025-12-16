@@ -25,4 +25,5 @@ export declare const findById: (id: string) => Promise<(mongoose.Document<unknow
 }> & {
     __v: number;
 }) | null>;
+export declare const deleteAll: (userId: string) => Promise<mongoose.mongo.DeleteResult>;
 //# sourceMappingURL=notification.repository.d.ts.map

@@ -6,5 +6,6 @@ router.use(protect); // All routes protected
 router.get('/', notificationController.getNotifications);
 router.patch('/:id/read', notificationController.markRead);
 router.post('/:id/respond', notificationController.respondToInvite);
+router.delete('/', notificationController.clearNotifications);
 export default router;
 //# sourceMappingURL=notification.routes.js.map

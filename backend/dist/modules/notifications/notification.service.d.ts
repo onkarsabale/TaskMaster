@@ -9,6 +9,7 @@ export declare const markAsRead: (id: string, userId: string) => Promise<(import
 }> & {
     __v: number;
 }) | null>;
+export declare const clearAll: (userId: string) => Promise<import("mongodb").DeleteResult>;
 export declare const respondToInvite: (id: string, action: "accept" | "reject", userId: string) => Promise<(import("mongoose").Document<unknown, {}, INotification, {}, import("mongoose").DefaultSchemaOptions> & INotification & Required<{
     _id: import("mongoose").Types.ObjectId;
 }> & {
