@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
@@ -13,11 +13,10 @@ import { Team } from './pages/Team';
 import { Settings } from './pages/Settings';
 import { useAuthStore } from './store/auth.store';
 import { RoleBasedRoute } from './components/RoleBasedRoute';
-import { useSocket } from './hooks/useSocket';
 import { ToastProvider } from './context/ToastContext';
 import { Layout } from './components/Layout';
-import { Outlet } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
+import { SocketProvider } from './context/SocketContext';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -33,8 +32,7 @@ const AppContent = () => {
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
 
-  // Initialize socket connection
-  useSocket();
+  // Socket connection is now handled by SocketProvider
 
   useEffect(() => {
     checkAuth();
@@ -107,9 +105,11 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
         <ThemeProvider>
-          <BrowserRouter>
-            <AppContent />
-          </BrowserRouter>
+          <SocketProvider>
+            <BrowserRouter>
+              <AppContent />
+            </BrowserRouter>
+          </SocketProvider>
         </ThemeProvider>
       </ToastProvider>
       <ReactQueryDevtools initialIsOpen={false} />

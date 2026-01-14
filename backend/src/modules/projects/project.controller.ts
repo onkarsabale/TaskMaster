@@ -2,12 +2,13 @@ import type { Request, Response } from 'express';
 import * as projectService from './project.service.js';
 import { Project } from './project.model.js';
 import * as notificationService from '../notifications/notification.service.js';
+import { logger } from '../../utils/logger.js';
 
 export const createProject = async (req: Request, res: Response) => {
     try {
         const { title, description } = req.body;
         // @ts-ignore - user is attached by auth middleware
-        const userId = req.user._id;
+        const userId = req.user!._id.toString();
         const project = await projectService.createProject(title, description, userId);
         res.status(201).json(project);
     } catch (error) {
@@ -18,18 +19,17 @@ export const createProject = async (req: Request, res: Response) => {
 export const getMyProjects = async (req: Request, res: Response) => {
     try {
         // @ts-ignore
-        const userId = req.user._id;
-        // @ts-ignore
-        const userRole = req.user.role;
-        console.log(`[DEBUG] getMyProjects - User: ${userId}, Role: ${userRole}`);
+        const userId = req.user!._id.toString();
+        const userRole = req.user!.role;
+        logger.debug(`getMyProjects - User: ${userId}, Role: ${userRole}`);
 
         let projects;
         if (userRole === 'admin') {
             projects = await Project.find().populate('owner', 'username email').populate('members.user', 'username email');
-            console.log(`[DEBUG] Admin fetching all projects. Count: ${projects.length}`);
+            logger.debug(`Admin fetching all projects. Count: ${projects.length}`);
         } else {
             projects = await projectService.getUserProjects(userId);
-            console.log(`[DEBUG] User fetching own projects. Count: ${projects.length}`);
+            logger.debug(`User fetching own projects. Count: ${projects.length}`);
         }
         res.json(projects);
     } catch (error) {
@@ -87,7 +87,7 @@ export const inviteMember = async (req: Request, res: Response) => {
         const { id } = req.params;
         const { email } = req.body;
         // @ts-ignore
-        const senderId = req.user._id;
+        const senderId = req.user!._id.toString();
 
         if (!id) return res.status(400).json({ message: 'Project ID is required' });
         if (!email) return res.status(400).json({ message: 'Email is required' });

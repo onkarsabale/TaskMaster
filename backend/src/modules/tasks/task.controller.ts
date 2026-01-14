@@ -3,6 +3,7 @@ import * as taskService from './task.service.js';
 import { createTaskSchema, updateTaskSchema } from './task.dto.js';
 import { Project } from '../projects/project.model.js';
 import { Task } from './task.model.js';
+import { logger } from '../../utils/logger.js';
 import { object } from 'zod';
 
 export const createTask = async (req: Request, res: Response, next: NextFunction) => {
@@ -84,7 +85,7 @@ export const getTasks = async (req: Request, res: Response, next: NextFunction) 
             // Search logic if needed (reuse from Dashboard logic or implement here)
             // For now, simple match
 
-            console.log(`[DEBUG] Admin getTasks Query:`, query);
+            logger.debug(`Admin getTasks Query:`, query);
 
             tasks = await Task.find(query)
                 .populate('assignedTo', 'username email avatar')

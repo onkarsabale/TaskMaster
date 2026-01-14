@@ -8,7 +8,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { TaskList } from '../components/TaskList';
 import { TaskForm } from '../components/TaskForm';
 import { UserSearch } from '../components/UserSearch';
-import { joinProjectRoom, leaveProjectRoom } from '../hooks/useSocket';
+import { useSocketContext } from '../context/SocketContext';
 import type { Task, CreateTaskDto, UpdateTaskDto } from '../types/task';
 import type { ProjectMember } from '../types/project';
 
@@ -16,6 +16,7 @@ export const ProjectDetails = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { user } = useAuthStore();
+    const { joinProjectRoom, leaveProjectRoom } = useSocketContext();
 
     // Join Project Room for Real-time Updates
     useEffect(() => {
@@ -25,7 +26,7 @@ export const ProjectDetails = () => {
                 leaveProjectRoom(id);
             };
         }
-    }, [id]);
+    }, [id, joinProjectRoom, leaveProjectRoom]);
 
     // Data Fetching
     const { data: project, isLoading: isProjectLoading, error: projectError } = useProject(id!);

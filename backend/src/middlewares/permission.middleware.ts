@@ -7,6 +7,10 @@ export const checkProjectPermission = (requiredRole?: 'project_manager' | 'proje
         try {
             // @ts-ignore
             const user = req.user;
+            if (!user) {
+                return next(new AppError('Authentication required', 401));
+            }
+
             // Admin has global access
             if (user.role === 'admin') {
                 return next();
