@@ -51,6 +51,20 @@ export const Dashboard = () => {
     const { user, login, logout } = useAuthStore();
     const { confirm } = useConfirmDialog();
 
+    const { toggle } = useSidebar();
+
+    const manageableProjects = useMemo(() => {
+        if (!user || !projects) return [];
+        // Admin gets all projects
+        if (user.role === 'admin') return projects;
+
+        return projects.filter(p => {
+            const isOwner = p.owner._id === user._id || (typeof p.owner === 'string' && p.owner === user._id);
+            const isManager = p.members?.some(m => m.user._id === user._id && m.role === 'project_manager');
+            return isOwner || isManager;
+        });
+    }, [projects, user]);
+
     // Socket logic temporarily kept, but will be refactored to just invalidate queries
     // const socket = useSocket(); 
 
@@ -219,19 +233,7 @@ export const Dashboard = () => {
         );
     }
 
-    const manageableProjects = useMemo(() => {
-        if (!user || !projects) return [];
-        // Admin gets all projects
-        if (user.role === 'admin') return projects;
 
-        return projects.filter(p => {
-            const isOwner = p.owner._id === user._id || (typeof p.owner === 'string' && p.owner === user._id);
-            const isManager = p.members?.some(m => m.user._id === user._id && m.role === 'project_manager');
-            return isOwner || isManager;
-        });
-    }, [projects, user]);
-
-    const { toggle } = useSidebar();
 
     // ...
 

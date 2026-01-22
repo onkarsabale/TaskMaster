@@ -6,3 +6,6 @@
 2026-01-14 19:26:13:2613 [31merror[39m: [31m403 - Not authorized, invalid role[39m
 2026-01-14 19:41:38:4138 [31merror[39m: [31m401 - Not authorized, no token[39m
 2026-01-14 19:41:38:4138 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 12:37:25:3725 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 12:37:25:3725 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 12:37:50:3750 [31merror[39m: [31m401 - Invalid email or password[39m

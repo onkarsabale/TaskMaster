@@ -451,3 +451,64 @@
 2026-01-15 18:23:56:2356 [35mhttp[39m: [35mGET /api/notifications[39m
 2026-01-15 18:46:58:4658 [32minfo[39m: [32mSocket disconnected: 5sGTTiO_Yv769T_tAAAU[39m
 2026-01-15 18:46:58:4658 [32minfo[39m: [32mSocket disconnected: sdB0oZPuVrJM9acWAAAW[39m
+2026-01-22 12:36:24:3624 [32minfo[39m: [32m🚀 Server running in development mode on port 5000[39m
+2026-01-22 12:36:30:3630 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 12:36:30:3630 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 12:36:30:3630 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 12:36:30:3630 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 12:36:30:3630 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 12:36:30:3630 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 12:36:30:3630 [32minfo[39m: [32mSocket connected: 76y6d5hClDTGm1SaAAAB[39m
+2026-01-22 12:36:30:3630 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 12:36:30:3630 [32minfo[39m: [32mSocket disconnected: 76y6d5hClDTGm1SaAAAB[39m
+2026-01-22 12:36:31:3631 [32minfo[39m: [32mSocket connected: qr7HLloB0uEgptHlAAAD[39m
+2026-01-22 12:36:31:3631 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 12:36:36:3636 [32minfo[39m: [32mSocket disconnected: qr7HLloB0uEgptHlAAAD[39m
+2026-01-22 12:36:36:3636 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 12:36:36:3636 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 12:36:36:3636 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 12:36:36:3636 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 12:36:36:3636 [32minfo[39m: [32mSocket connected: mJ7nhi_u3FoAg3D1AAAF[39m
+2026-01-22 12:36:36:3636 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 12:36:36:3636 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 12:36:36:3636 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 12:36:36:3636 [32minfo[39m: [32mSocket disconnected: mJ7nhi_u3FoAg3D1AAAF[39m
+2026-01-22 12:36:37:3637 [32minfo[39m: [32mSocket connected: mkIEcp6p17jDz3NWAAAH[39m
+2026-01-22 12:36:37:3637 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 12:37:24:3724 [32minfo[39m: [32mSocket disconnected: mkIEcp6p17jDz3NWAAAH[39m
+2026-01-22 12:37:25:3725 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 12:37:25:3725 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 12:37:25:3725 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 12:37:25:3725 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 12:37:30:3730 [35mhttp[39m: [35mPOST /api/auth/login[39m
+2026-01-22 12:37:30:3730 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 12:37:30:3730 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 12:37:30:3730 [32minfo[39m: [32mSocket connected: iW8l4MRG4y580iQNAAAJ[39m
+2026-01-22 12:37:30:3730 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 12:37:30:3730 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 12:37:30:3730 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 12:37:50:3750 [35mhttp[39m: [35mPOST /api/auth/login[39m
+2026-01-22 12:37:50:3750 [31merror[39m: [31m401 - Invalid email or password[39m
+2026-01-22 13:02:51:251 [32minfo[39m: [32m🚀 Server running in development mode on port 5000[39m
+2026-01-22 13:02:51:251 [32minfo[39m: [32mSocket connected: tfw52jbKSvvBQ2guAAAB[39m
+2026-01-22 13:02:51:251 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 13:02:59:259 [32minfo[39m: [32mSocket disconnected: tfw52jbKSvvBQ2guAAAB[39m
+2026-01-22 13:03:01:31 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 13:03:01:31 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 13:03:01:31 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 13:03:01:31 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 13:03:01:31 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 13:03:01:31 [32minfo[39m: [32mSocket connected: NhYrGyZHlVUkYzkzAAAD[39m
+2026-01-22 13:03:01:31 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 13:03:01:31 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 13:03:01:31 [32minfo[39m: [32mSocket disconnected: NhYrGyZHlVUkYzkzAAAD[39m
+2026-01-22 13:03:01:31 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 13:03:02:32 [32minfo[39m: [32mSocket connected: DulGxIXsRRVxUnS2AAAF[39m
+2026-01-22 13:03:02:32 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 13:03:20:320 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 13:03:20:320 [35mhttp[39m: [35mGET /api/projects/69400baf502bebd03fd9ed85[39m
+2026-01-22 13:03:20:320 [35mhttp[39m: [35mGET /api/tasks?projectId=69400baf502bebd03fd9ed85[39m
+2026-01-22 13:03:20:320 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 13:03:20:320 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 13:03:38:338 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 13:04:40:440 [35mhttp[39m: [35mGET /api/notifications[39m
