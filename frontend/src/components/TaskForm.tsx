@@ -2,7 +2,6 @@ import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import type { Task } from '../types';
-import { PermissionGuard } from './PermissionGuard';
 import { useAuthStore } from '../store/auth.store';
 
 const taskSchema = z.object({
@@ -25,10 +24,11 @@ interface TaskFormProps {
     onCancel: () => void;
     projectId?: string;
     projectMembers?: ProjectMember[];
-    projects?: import('../types/project').Project[]; // Passed when creating from Dashboard
+    projects?: import('../types/project').Project[];
+    canAssign?: boolean; // Whether the user can assign tasks (project manager/owner)
 }
 
-export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, projects, projectId }: TaskFormProps) => {
+export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, projects, projectId, canAssign }: TaskFormProps) => {
     const { user } = useAuthStore();
     const isEditMode = !!initialData;
     const isUser = user?.role === 'user';
@@ -55,6 +55,14 @@ export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, proj
     });
 
     const titleLength = (useWatch({ control, name: 'title' }) || '').length;
+    const currentProjectId = useWatch({ control, name: 'projectId' });
+
+    // Derive members from the selected project if not explicitly passed
+    const activeProjectMembers = projectMembers || (() => {
+        if (!projects || !currentProjectId) return undefined;
+        const selectedProject = projects.find(p => p._id === currentProjectId);
+        return selectedProject?.members;
+    })();
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-1 overflow-hidden">
@@ -162,12 +170,12 @@ export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, proj
                         </div>
                     </div>
 
-                    {/* Assignee */}
-                    <PermissionGuard allowedRoles={['admin', 'manager']}>
+                    {/* Assignee - Show if canAssign is true OR if user is admin/manager */}
+                    {(canAssign || user?.role === 'admin' || user?.role === 'manager') && (
                         <div className="flex flex-col gap-2">
                             <label className="text-slate-700 dark:text-white text-base font-medium leading-normal">Assignee</label>
                             <div className="relative">
-                                {projectMembers ? (
+                                {activeProjectMembers ? (
                                     <>
                                         <select
                                             {...register('assignedTo')}
@@ -175,9 +183,9 @@ export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, proj
                                             className="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[rgb(var(--color-text))] focus:outline-0 focus:ring-2 focus:ring-[rgb(var(--color-primary))]/50 border border-slate-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:border-[rgb(var(--color-primary))] h-12 placeholder:text-slate-400 px-4 pr-10 text-base font-normal leading-normal appearance-none transition-all cursor-pointer"
                                         >
                                             <option value="">Unassigned</option>
-                                            {projectMembers.map((m) => (
+                                            {activeProjectMembers.map((m) => (
                                                 <option key={m.user._id} value={m.user._id}>
-                                                    {m.user.username} ({m.role.replace('_', ' ')})
+                                                    {m.user.username} ({m.role === 'project_manager' ? 'Manager' : 'Member'})
                                                 </option>
                                             ))}
                                         </select>
@@ -190,7 +198,7 @@ export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, proj
                                         <input
                                             {...register('assignedTo')}
                                             disabled={isReadOnly}
-                                            placeholder="Enter username or email"
+                                            placeholder="Enter user ID to assign"
                                             className={`form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[rgb(var(--color-text))] focus:outline-0 focus:ring-2 focus:ring-[rgb(var(--color-primary))]/50 border border-slate-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:border-[rgb(var(--color-primary))] h-12 placeholder:text-slate-400 px-4 text-base font-normal leading-normal transition-all ${isReadOnly ? 'opacity-60 cursor-not-allowed' : ''}`}
                                         />
                                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 dark:text-[#9da8b9]">
@@ -200,7 +208,7 @@ export const TaskForm = ({ initialData, onSubmit, onCancel, projectMembers, proj
                                 )}
                             </div>
                         </div>
-                    </PermissionGuard>
+                    )}
                 </div>
             </div>
 

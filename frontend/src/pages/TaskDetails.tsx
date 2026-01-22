@@ -3,14 +3,23 @@ import { ErrorState } from '../components/ErrorState';
 import { useTask, useDeleteTask } from '../hooks/useTasks';
 import { Loader } from '../components/Loader';
 import { PermissionGuard } from '../components/PermissionGuard';
+import { useConfirmDialog } from '../context/ConfirmDialogContext';
 
 export const TaskDetails = () => {
     const { taskId } = useParams();
     const navigate = useNavigate();
     const { mutate: deleteTask } = useDeleteTask();
+    const { confirm } = useConfirmDialog();
 
     const handleDelete = async () => {
-        if (taskId && window.confirm('Are you sure you want to delete this task?')) {
+        const confirmed = await confirm({
+            title: 'Delete Task',
+            message: 'Are you sure you want to delete this task? This action cannot be undone.',
+            confirmText: 'Delete',
+            cancelText: 'Cancel',
+            variant: 'danger',
+        });
+        if (taskId && confirmed) {
             deleteTask(taskId, {
                 onSuccess: () => navigate('/dashboard')
             });

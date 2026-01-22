@@ -102,3 +102,50 @@ export const inviteMember = async (req: Request, res: Response) => {
         }
     }
 };
+
+export const removeMember = async (req: Request, res: Response) => {
+    try {
+        const { id, userId } = req.params;
+
+        if (!id) return res.status(400).json({ message: 'Project ID is required' });
+        if (!userId) return res.status(400).json({ message: 'User ID is required' });
+
+        // Prevent owner from being removed (extra safeguard)
+        const project = await projectService.getProjectById(id);
+        if (project && project.owner._id.toString() === userId) {
+            return res.status(400).json({ message: 'Cannot remove the project owner' });
+        }
+
+        const updatedProject = await projectService.removeMember(id, userId);
+        if (!updatedProject) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+        res.json(updatedProject);
+    } catch (error) {
+        logger.error('Error removing member', error);
+        res.status(500).json({ message: 'Error removing member', error });
+    }
+};
+
+export const deleteProject = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        // @ts-ignore
+        const userId = req.user!._id.toString();
+
+        if (!id) return res.status(400).json({ message: 'Project ID is required' });
+
+        const deletedProject = await projectService.deleteProject(id, userId);
+        if (!deletedProject) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+        res.json({ message: 'Project deleted successfully' });
+    } catch (error) {
+        if (error instanceof Error && (error as any).statusCode) {
+            res.status((error as any).statusCode).json({ message: error.message });
+        } else {
+            logger.error('Error deleting project', error);
+            res.status(500).json({ message: 'Error deleting project', error });
+        }
+    }
+};

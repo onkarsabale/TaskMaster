@@ -60,12 +60,19 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         };
 
         const handleNotificationAssigned = (data: { message: string, taskId: string, projectId: string }) => {
-            showToast(data.message, 'info');
+            showToast(`🔔 ${data.message}`, 'info');
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
+            queryClient.invalidateQueries({ queryKey: ['notifications'] });
         };
 
         const handleNewNotification = (data: Notification) => {
-            showToast(data.message || 'New notification received', 'info');
+            // Show toast for new notifications (project invites, task assignments, etc.)
+            const message = data.type === 'TASK_ASSIGNED'
+                ? `📋 New Task: ${data.message}`
+                : data.type === 'PROJECT_INVITE'
+                    ? `📩 ${data.message}`
+                    : `🔔 ${data.message || 'New notification received'}`;
+            showToast(message, 'info');
             queryClient.invalidateQueries({ queryKey: ['notifications'] });
         };
 

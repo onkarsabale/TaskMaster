@@ -61,3 +61,40 @@ export const useInviteMember = () => {
         }
     });
 };
+
+export const useRemoveMember = () => {
+    const queryClient = useQueryClient();
+    const { showToast } = useToast();
+    return useMutation({
+        mutationFn: async ({ projectId, userId }: { projectId: string; userId: string }) => {
+            return projectApi.removeMember(projectId, userId);
+        },
+        onSuccess: (_, { projectId }) => {
+            queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+            queryClient.invalidateQueries({ queryKey: ['projects'] });
+            showToast('Member removed successfully', 'success');
+        },
+        onError: (error: AxiosError<{ message: string }>) => {
+            const msg = error.response?.data?.message || 'Failed to remove member';
+            showToast(msg, 'error');
+        }
+    });
+};
+
+export const useDeleteProject = () => {
+    const queryClient = useQueryClient();
+    const { showToast } = useToast();
+    return useMutation({
+        mutationFn: async (projectId: string) => {
+            return projectApi.deleteProject(projectId);
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['projects'] });
+            showToast('Project deleted successfully', 'success');
+        },
+        onError: (error: AxiosError<{ message: string }>) => {
+            const msg = error.response?.data?.message || 'Failed to delete project';
+            showToast(msg, 'error');
+        }
+    });
+};

@@ -4,7 +4,10 @@ import { Loader } from '../components/Loader';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
 
+import { useSidebar } from '../context/SidebarContext';
+
 export const Projects = () => {
+    const { toggle } = useSidebar();
     const { data: projects, isLoading } = useProjects();
     const { user } = useAuthStore();
     const { mutate: createProject } = useCreateProject();
@@ -29,7 +32,15 @@ export const Projects = () => {
     return (
         <div className="p-6 max-w-7xl mx-auto">
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Projects</h1>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={toggle}
+                        className="lg:hidden text-[#637588] dark:text-[#9da8b9]"
+                    >
+                        <span className="material-symbols-outlined">menu</span>
+                    </button>
+                    <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Projects</h1>
+                </div>
                 <button
                     onClick={() => setIsCreating(true)}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"

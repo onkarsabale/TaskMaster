@@ -17,6 +17,8 @@ import * as authApi from '../api/auth.api';
 import { useToast } from '../hooks/useToast';
 import type { Project } from '../types/project';
 import { NotificationDropdown } from '../components/NotificationDropdown';
+import { useConfirmDialog } from '../context/ConfirmDialogContext';
+import { useSidebar } from '../context/SidebarContext';
 
 export const Dashboard = () => {
     const navigate = useNavigate();
@@ -47,6 +49,7 @@ export const Dashboard = () => {
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
     const { user, login, logout } = useAuthStore();
+    const { confirm } = useConfirmDialog();
 
     // Socket logic temporarily kept, but will be refactored to just invalidate queries
     // const socket = useSocket(); 
@@ -99,7 +102,14 @@ export const Dashboard = () => {
 
     const handleDelete = async (id: string) => {
         // Permission check handled by backend and TaskList button visibility
-        if (confirm('Are you sure you want to delete this task?')) {
+        const confirmed = await confirm({
+            title: 'Delete Task',
+            message: 'Are you sure you want to delete this task? This action cannot be undone.',
+            confirmText: 'Delete',
+            cancelText: 'Cancel',
+            variant: 'danger',
+        });
+        if (confirmed) {
             await deleteTaskMutation.mutateAsync(id);
         }
     };
@@ -107,7 +117,7 @@ export const Dashboard = () => {
 
 
 
-    // Derived Logic
+    // Derived Logic - Only count tasks assigned to the current user
     const stats = useMemo(() => {
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
@@ -115,6 +125,10 @@ export const Dashboard = () => {
         let open = 0, dueToday = 0, overdue = 0, completed = 0;
 
         tasks.forEach((task: Task) => {
+            // Only count tasks assigned to the logged-in user
+            const assignedId = typeof task.assignedTo === 'object' ? task.assignedTo?._id : task.assignedTo;
+            if (assignedId !== user?._id) return;
+
             if (task.status === 'completed') {
                 completed++;
             } else {
@@ -128,7 +142,7 @@ export const Dashboard = () => {
             }
         });
         return { open, dueToday, overdue, completed };
-    }, [tasks]);
+    }, [tasks, user]);
 
     const filteredTasks = useMemo(() => {
         const result = tasks.filter((task: Task) => {
@@ -205,11 +219,30 @@ export const Dashboard = () => {
         );
     }
 
+    const manageableProjects = useMemo(() => {
+        if (!user || !projects) return [];
+        // Admin gets all projects
+        if (user.role === 'admin') return projects;
+
+        return projects.filter(p => {
+            const isOwner = p.owner._id === user._id || (typeof p.owner === 'string' && p.owner === user._id);
+            const isManager = p.members?.some(m => m.user._id === user._id && m.role === 'project_manager');
+            return isOwner || isManager;
+        });
+    }, [projects, user]);
+
+    const { toggle } = useSidebar();
+
+    // ...
+
     return (
         <div className="flex-1 flex flex-col h-full overflow-hidden relative">
             {/* Header */}
             <header className="h-16 shrink-0 border-b border-gray-200 dark:border-gray-800 bg-[rgb(var(--color-bg))] flex items-center justify-between px-6 lg:px-8 z-10">
-                <button className="lg:hidden text-[#637588] dark:text-[#9da8b9]">
+                <button
+                    onClick={toggle}
+                    className="lg:hidden text-[#637588] dark:text-[#9da8b9]"
+                >
                     <span className="material-symbols-outlined">menu</span>
                 </button>
                 {/* Search Bar */}
@@ -313,7 +346,7 @@ export const Dashboard = () => {
                     )}
                     <button
                         onClick={() => {
-                            if (!projects || projects.length === 0) {
+                            if (!manageableProjects || manageableProjects.length === 0) {
                                 showToast('Please create a project first', 'error', 'You simply cannot add a task without a project.');
                                 return;
                             }
@@ -515,7 +548,8 @@ export const Dashboard = () => {
                             initialData={editingTask}
                             onSubmit={handleCreateOrUpdate}
                             onCancel={() => setIsModalOpen(false)}
-                            projects={projects}
+                            projects={manageableProjects}
+                            canAssign={true}
                         />
                     </div>
                 </div>

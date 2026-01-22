@@ -5,6 +5,8 @@ import { Project } from '../projects/project.model.js';
 import { Task } from './task.model.js';
 import { logger } from '../../utils/logger.js';
 import { object } from 'zod';
+import * as notificationService from '../notifications/notification.service.js';
+import mongoose from 'mongoose';
 
 export const createTask = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -44,10 +46,21 @@ export const createTask = async (req: Request, res: Response, next: NextFunction
                 const assignedId = typeof task.assignedTo === 'object' ? task.assignedTo._id : task.assignedTo;
                 // Don't notify if assigning to self
                 if (assignedId.toString() !== req.user._id.toString()) {
+                    // Socket notification (real-time)
                     io.to(`user:${assignedId}`).emit('notification:assigned', {
                         message: `You have been assigned a new task: ${task.title}`,
                         taskId: task._id,
                         projectId: data.projectId
+                    });
+
+                    // Persistent notification (database)
+                    await notificationService.createNotification({
+                        recipient: new mongoose.Types.ObjectId(assignedId.toString()),
+                        sender: req.user._id,
+                        type: 'TASK_ASSIGNED',
+                        relatedId: task._id as mongoose.Types.ObjectId,
+                        message: `You have been assigned a new task: ${task.title}`,
+                        status: 'none'
                     });
                 }
             }
@@ -177,10 +190,21 @@ export const updateTask = async (req: Request, res: Response, next: NextFunction
             io.to(`project:${task.projectId}`).emit('task:updated', updatedTask);
             if (data.assignedTo && data.assignedTo !== task.assignedTo?.toString()) {
                 if (data.assignedTo !== req.user._id.toString()) {
+                    // Socket notification (real-time)
                     io.to(`user:${data.assignedTo}`).emit('notification:assigned', {
                         message: `You have been assigned to task: ${updatedTask?.title}`,
                         taskId: updatedTask?._id,
                         projectId: task.projectId
+                    });
+
+                    // Persistent notification (database)
+                    await notificationService.createNotification({
+                        recipient: new mongoose.Types.ObjectId(data.assignedTo),
+                        sender: req.user._id,
+                        type: 'TASK_ASSIGNED',
+                        relatedId: updatedTask?._id as mongoose.Types.ObjectId,
+                        message: `You have been assigned to task: ${updatedTask?.title}`,
+                        status: 'none'
                     });
                 }
             }

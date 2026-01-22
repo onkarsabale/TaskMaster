@@ -20,3 +20,12 @@ export const addMember = async (projectId: string, userId: string, role: string)
     const response = await api.post(`/projects/${projectId}/members`, { userId, role });
     return response.data;
 };
+
+export const removeMember = async (projectId: string, userId: string): Promise<Project> => {
+    const response = await api.delete(`/projects/${projectId}/members/${userId}`);
+    return response.data;
+};
+
+export const deleteProject = async (projectId: string): Promise<void> => {
+    await api.delete(`/projects/${projectId}`);
+};

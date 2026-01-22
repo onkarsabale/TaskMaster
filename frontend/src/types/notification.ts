@@ -7,10 +7,11 @@ export interface Notification {
         username: string;
         avatar?: string;
     };
-    type: 'PROJECT_INVITE' | 'INVITE_ACCEPTED' | 'GENERAL';
-    relatedId?: string; // Project ID usually
+    type: 'PROJECT_INVITE' | 'INVITE_ACCEPTED' | 'TASK_ASSIGNED' | 'GENERAL';
+    relatedId?: string; // Project ID or Task ID
     message: string;
-    status: 'pending' | 'read' | 'accepted' | 'rejected';
+    isRead: boolean;
+    status: 'pending' | 'accepted' | 'rejected' | 'none';
     createdAt: string;
     updatedAt: string;
 }

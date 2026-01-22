@@ -14,6 +14,7 @@ export const findById = async (id: string): Promise<IProject | null> => {
 export const findByMember = async (userId: string): Promise<IProject[]> => {
     return await Project.find({ 'members.user': userId })
         .populate('owner', 'username email')
+        .populate('members.user', 'username email')
         .sort({ updatedAt: -1 });
 };
 
@@ -41,4 +42,8 @@ export const isMember = async (projectId: string, userId: string): Promise<boole
 
 export const findByIdSimple = async (id: string): Promise<IProject | null> => {
     return await Project.findById(id);
+};
+
+export const deleteById = async (id: string): Promise<IProject | null> => {
+    return await Project.findByIdAndDelete(id);
 };

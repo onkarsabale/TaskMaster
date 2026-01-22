@@ -14,6 +14,7 @@ import { Settings } from './pages/Settings';
 import { useAuthStore } from './store/auth.store';
 import { RoleBasedRoute } from './components/RoleBasedRoute';
 import { ToastProvider } from './context/ToastContext';
+import { ConfirmDialogProvider } from './context/ConfirmDialogContext';
 import { Layout } from './components/Layout';
 import { ThemeProvider } from './context/ThemeContext';
 import { SocketProvider } from './context/SocketContext';
@@ -104,13 +105,15 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
-        <ThemeProvider>
-          <SocketProvider>
-            <BrowserRouter>
-              <AppContent />
-            </BrowserRouter>
-          </SocketProvider>
-        </ThemeProvider>
+        <ConfirmDialogProvider>
+          <ThemeProvider>
+            <SocketProvider>
+              <BrowserRouter>
+                <AppContent />
+              </BrowserRouter>
+            </SocketProvider>
+          </ThemeProvider>
+        </ConfirmDialogProvider>
       </ToastProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

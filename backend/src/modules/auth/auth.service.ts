@@ -43,8 +43,11 @@ export const login = async (res: Response, data: LoginDto) => {
 };
 
 export const logout = (res: Response) => {
+    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie('jwt', '', {
         httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? 'none' : 'lax',
         expires: new Date(0),
     });
     return { message: 'Logged out successfully' };

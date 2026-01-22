@@ -1,1 +1,8 @@
 2025-12-18 21:05:18:518 [31merror[39m: [31m409 - User already exists[39m
+2026-01-14 18:31:38:3138 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-14 18:31:38:3138 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-14 19:26:01:261 [31merror[39m: [31m403 - Not authorized, invalid role[39m
+2026-01-14 19:26:05:265 [31merror[39m: [31m403 - Not authorized, invalid role[39m
+2026-01-14 19:26:13:2613 [31merror[39m: [31m403 - Not authorized, invalid role[39m
+2026-01-14 19:41:38:4138 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-14 19:41:38:4138 [31merror[39m: [31m401 - Not authorized, no token[39m

@@ -3,11 +3,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '../../api/client';
 import type { User } from '../../types/user';
 import { UserModal } from './UserModal';
+import { useConfirmDialog } from '../../context/ConfirmDialogContext';
 
 export const UserManagement = () => {
     const queryClient = useQueryClient();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingUser, setEditingUser] = useState<User | undefined>(undefined);
+    const { confirm } = useConfirmDialog();
 
     const { data: users = [], isLoading, error } = useQuery({
         queryKey: ['users'],
@@ -55,8 +57,15 @@ export const UserManagement = () => {
         }
     };
 
-    const handleDelete = (id: string) => {
-        if (confirm('Are you sure you want to delete this user?')) {
+    const handleDelete = async (id: string) => {
+        const confirmed = await confirm({
+            title: 'Delete User',
+            message: 'Are you sure you want to delete this user? This action cannot be undone.',
+            confirmText: 'Delete',
+            cancelText: 'Cancel',
+            variant: 'danger',
+        });
+        if (confirmed) {
             deleteUserMutation.mutate(id);
         }
     };

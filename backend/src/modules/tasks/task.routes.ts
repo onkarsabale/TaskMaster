@@ -11,6 +11,6 @@ router.get('/', taskController.getTasks);
 router.get('/:id', taskController.getTaskById);
 router.put('/:id', taskController.updateTask); // Keep PUT for full updates if needed, mostly PATCH
 router.patch('/:id', taskController.updateTask);
-router.delete('/:id', authorize('admin'), taskController.deleteTask);
+router.delete('/:id', taskController.deleteTask);
 
 export default router;

@@ -13,7 +13,7 @@ export const NotificationDropdown = () => {
     const markReadMutation = useMarkAsRead();
     const clearAllMutation = useClearNotifications();
 
-    const unreadCount = notifications.filter(n => n.status === 'pending').length;
+    const unreadCount = notifications.filter(n => !n.isRead).length;
 
     // Close on click outside
     useEffect(() => {
@@ -106,7 +106,7 @@ export const NotificationDropdown = () => {
                                                 animate={{ opacity: 1, x: 0 }}
                                                 exit={{ opacity: 0, x: 20 }}
                                                 key={notification._id}
-                                                className={`p-4 border-b border-gray-50 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-[#28303b] transition-colors ${notification.status === 'pending' ? 'bg-blue-50/30 dark:bg-blue-500/5' : ''}`}
+                                                className={`p-4 border-b border-gray-50 dark:border-gray-800 last:border-0 hover:bg-gray-50 dark:hover:bg-[#28303b] transition-colors ${!notification.isRead ? 'bg-blue-50/30 dark:bg-blue-500/5' : ''}`}
                                             >
                                                 <div className="flex gap-4">
                                                     <div className="size-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center overflow-hidden shrink-0 border border-slate-200 dark:border-slate-600">
@@ -149,7 +149,7 @@ export const NotificationDropdown = () => {
                                                             </div>
                                                         )}
                                                     </div>
-                                                    {notification.status === 'pending' && notification.type !== 'PROJECT_INVITE' && (
+                                                    {!notification.isRead && notification.type !== 'PROJECT_INVITE' && (
                                                         <button
                                                             onClick={() => handleMarkAsRead(notification._id)}
                                                             className="size-6 text-slate-400 hover:text-[rgb(var(--color-primary))] hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-full flex items-center justify-center transition-colors"
