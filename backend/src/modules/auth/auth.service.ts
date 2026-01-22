@@ -4,6 +4,7 @@ import * as authRepo from './auth.repository.js';
 import type { RegisterDto, LoginDto } from './auth.dto.js';
 import { generateToken } from '../../utils/jwt.js';
 import { AppError } from '../../utils/AppError.js';
+import { env } from '../../config/env.js';
 
 export const register = async (res: Response, data: RegisterDto) => {
     const existingUser = await authRepo.findUserByEmail(data.email);
@@ -43,7 +44,7 @@ export const login = async (res: Response, data: LoginDto) => {
 };
 
 export const logout = (res: Response) => {
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isProduction = env.NODE_ENV === 'production';
     res.cookie('jwt', '', {
         httpOnly: true,
         secure: isProduction,

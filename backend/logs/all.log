@@ -512,3 +512,37 @@
 2026-01-22 13:03:20:320 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
 2026-01-22 13:03:38:338 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
 2026-01-22 13:04:40:440 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 13:08:04:84 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 13:08:04:84 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 13:08:04:84 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 13:08:04:84 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 13:08:41:841 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 13:09:08:98 [35mhttp[39m: [35mPOST /api/tasks[39m
+2026-01-22 13:09:08:98 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 13:09:28:928 [35mhttp[39m: [35mPOST /api/tasks[39m
+2026-01-22 13:09:28:928 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 13:09:28:928 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 13:09:32:932 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 13:09:32:932 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 13:09:32:932 [35mhttp[39m: [35mGET /api/projects/69400baf502bebd03fd9ed85[39m
+2026-01-22 13:09:32:932 [35mhttp[39m: [35mGET /api/tasks?projectId=69400baf502bebd03fd9ed85[39m
+2026-01-22 13:09:32:932 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 13:09:45:945 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 13:18:40:1840 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 13:18:40:1840 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 13:18:40:1840 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 13:18:40:1840 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 13:19:37:1937 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 13:19:37:1937 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 13:19:37:1937 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 13:19:37:1937 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 13:19:37:1937 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 13:34:46:3446 [32minfo[39m: [32m🚀 Server running in development mode on port 5000[39m
+2026-01-22 13:34:46:3446 [32minfo[39m: [32mSocket connected: ehWz4TtnUbZQ_vXsAAAB[39m
+2026-01-22 13:34:46:3446 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 13:38:50:3850 [32minfo[39m: [32m🚀 Server running in development mode on port 5000[39m
+2026-01-22 13:38:50:3850 [32minfo[39m: [32mSocket connected: W4pTF27ZeU8cOctnAAAB[39m
+2026-01-22 13:38:50:3850 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 13:39:13:3913 [32minfo[39m: [32m🚀 Server running in development mode on port 5000[39m
+2026-01-22 13:39:13:3913 [32minfo[39m: [32mSocket connected: 4rVpdxbp8ylrVUdbAAAB[39m
+2026-01-22 13:39:13:3913 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
