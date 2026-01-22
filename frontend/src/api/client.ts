@@ -5,6 +5,24 @@ const api = axios.create({
     withCredentials: true,
 });
 
+// Add Authorization header interceptor for cross-domain production
+api.interceptors.request.use((config) => {
+    // Try to get token from persisted auth storage
+    const authStorage = localStorage.getItem('auth-storage');
+    if (authStorage) {
+        try {
+            const parsed = JSON.parse(authStorage);
+            const token = parsed?.state?.token;
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
+        } catch {
+            // Ignore parse errors
+        }
+    }
+    return config;
+});
+
 api.interceptors.response.use(
     (response) => response,
     (error) => {

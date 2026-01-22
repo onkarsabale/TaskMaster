@@ -16,13 +16,14 @@ export const register = async (res: Response, data: RegisterDto) => {
     const passwordHash = await bcrypt.hash(data.password, salt);
 
     const user = await authRepo.createUser(data.username, data.email, passwordHash);
-    generateToken(res, (user._id as unknown) as string, user.role);
+    const token = generateToken(res, (user._id as unknown) as string, user.role);
 
     return {
         _id: user._id,
         username: user.username,
         email: user.email,
         role: user.role,
+        token, // Include token in response for Authorization header fallback
     };
 };
 
@@ -33,13 +34,14 @@ export const login = async (res: Response, data: LoginDto) => {
         throw new AppError('Invalid email or password', 401);
     }
 
-    generateToken(res, (user._id as unknown) as string, user.role);
+    const token = generateToken(res, (user._id as unknown) as string, user.role);
 
     return {
         _id: user._id,
         username: user.username,
         email: user.email,
         role: user.role,
+        token, // Include token in response for Authorization header fallback
     };
 };
 

@@ -7,12 +7,20 @@ import { logger } from '../utils/logger.js';
 export const protect = async (req: Request, res: Response, next: NextFunction) => {
     let token;
 
+    // Try to get token from cookie first
     token = req.cookies.jwt;
 
-    // Debug logging for production cookie issues
+    // If no cookie, try Authorization header (for cross-domain where cookies are blocked)
+    if (!token && req.headers.authorization?.startsWith('Bearer ')) {
+        token = req.headers.authorization.split(' ')[1];
+        logger.info('[Auth] Using Authorization header token');
+    }
+
+    // Debug logging for production
     if (env.NODE_ENV === 'production') {
         logger.info(`[Auth] Cookies received: ${JSON.stringify(Object.keys(req.cookies || {}))}`);
         logger.info(`[Auth] JWT token present: ${!!token}`);
+        logger.info(`[Auth] Auth header: ${req.headers.authorization ? 'present' : 'none'}`);
         logger.info(`[Auth] Origin: ${req.headers.origin || 'none'}`);
     }
 
@@ -27,7 +35,7 @@ export const protect = async (req: Request, res: Response, next: NextFunction) =
             next(new Error('Not authorized, token failed'));
         }
     } else {
-        logger.warn(`[Auth] No token found in cookies`);
+        logger.warn(`[Auth] No token found in cookies or headers`);
         res.status(401);
         next(new Error('Not authorized, no token'));
     }

@@ -62,7 +62,8 @@ export const Login = () => {
                     password: data.password,
                 });
             }
-            setAuth(user);
+            // Pass token to store for Authorization header fallback
+            setAuth(user, user.token);
             navigate('/');
         } catch (err: unknown) {
             const error = err as { response?: { data?: { message?: string } } };
