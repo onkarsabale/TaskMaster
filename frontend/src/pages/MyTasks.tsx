@@ -8,7 +8,7 @@ import { TaskForm } from '../components/TaskForm';
 import type { Task, CreateTaskDto, UpdateTaskDto } from '../types/task';
 import { useProjects } from '../hooks/useProjects';
 import { useConfirmDialog } from '../context/ConfirmDialogContext';
-import { useSidebar } from '../context/SidebarContext';
+import { useSidebar } from '../context/useSidebar';
 
 export const MyTasks = () => {
     const { user } = useAuthStore();

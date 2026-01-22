@@ -1,62 +1,43 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
+import { useState, useCallback, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-
-interface ConfirmDialogOptions {
-    title: string;
-    message: string;
-    confirmText?: string;
-    cancelText?: string;
-    variant?: 'danger' | 'warning' | 'info';
-}
-
-interface ConfirmDialogContextValue {
-    confirm: (options: ConfirmDialogOptions) => Promise<boolean>;
-}
-
-const ConfirmDialogContext = createContext<ConfirmDialogContextValue | undefined>(undefined);
-
-export const useConfirmDialog = () => {
-    const context = useContext(ConfirmDialogContext);
-    if (!context) {
-        throw new Error('useConfirmDialog must be used within a ConfirmDialogProvider');
-    }
-    return context;
-};
+import {
+  ConfirmDialogContext,
+  type ConfirmDialogOptions,
+} from './ConfirmDialogContext';
 
 interface DialogState extends ConfirmDialogOptions {
-    isOpen: boolean;
-    resolve: ((value: boolean) => void) | null;
+  isOpen: boolean;
+  resolve: ((value: boolean) => void) | null;
 }
 
 export const ConfirmDialogProvider = ({ children }: { children: ReactNode }) => {
-    const [dialog, setDialog] = useState<DialogState>({
-        isOpen: false,
-        title: '',
-        message: '',
-        resolve: null,
+  const [dialog, setDialog] = useState<DialogState>({
+    isOpen: false,
+    title: '',
+    message: '',
+    resolve: null,
+  });
+
+  const confirm = useCallback((options: ConfirmDialogOptions): Promise<boolean> => {
+    return new Promise((resolve) => {
+      setDialog({
+        isOpen: true,
+        ...options,
+        resolve,
+      });
     });
+  }, []);
 
-    const confirm = useCallback((options: ConfirmDialogOptions): Promise<boolean> => {
-        return new Promise((resolve) => {
-            setDialog({
-                isOpen: true,
-                ...options,
-                resolve,
-            });
-        });
-    }, []);
+  const handleConfirm = () => {
+    dialog.resolve?.(true);
+    setDialog((prev) => ({ ...prev, isOpen: false }));
+  };
 
-    const handleConfirm = () => {
-        dialog.resolve?.(true);
-        setDialog((prev) => ({ ...prev, isOpen: false }));
-    };
-
-    const handleCancel = () => {
-        dialog.resolve?.(false);
-        setDialog((prev) => ({ ...prev, isOpen: false }));
-    };
-
+  const handleCancel = () => {
+    dialog.resolve?.(false);
+    setDialog((prev) => ({ ...prev, isOpen: false }));
+  };
     const variantStyles = {
         danger: {
             icon: 'warning',

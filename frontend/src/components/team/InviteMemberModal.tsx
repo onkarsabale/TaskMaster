@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import type { User } from '../../types/user';
+
 import type { Project } from '../../types/project';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';

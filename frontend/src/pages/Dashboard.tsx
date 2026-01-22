@@ -18,7 +18,7 @@ import { useToast } from '../hooks/useToast';
 import type { Project } from '../types/project';
 import { NotificationDropdown } from '../components/NotificationDropdown';
 import { useConfirmDialog } from '../context/ConfirmDialogContext';
-import { useSidebar } from '../context/SidebarContext';
+import { useSidebar } from '../context/useSidebar';
 
 export const Dashboard = () => {
     const navigate = useNavigate();

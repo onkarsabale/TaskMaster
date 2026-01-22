@@ -574,3 +574,147 @@
 2026-01-22 13:49:52:4952 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
 2026-01-22 13:49:52:4952 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
 2026-01-22 13:49:52:4952 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 14:00:44:044 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:00:44:044 [33mwarn[39m: [33m[Auth] No token found in cookies or headers[39m
+2026-01-22 14:00:44:044 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 14:00:45:045 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 14:00:45:045 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 14:00:45:045 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:00:45:045 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 14:00:45:045 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 14:00:45:045 [32minfo[39m: [32mSocket connected: nFHBt5tGLiQB5gAqAAAD[39m
+2026-01-22 14:00:45:045 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:00:45:045 [32minfo[39m: [32mSocket disconnected: nFHBt5tGLiQB5gAqAAAD[39m
+2026-01-22 14:00:45:045 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 14:00:47:047 [32minfo[39m: [32mSocket connected: c6lLrs4mqNx5wkC_AAAF[39m
+2026-01-22 14:00:47:047 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:01:00:10 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:01:00:10 [33mwarn[39m: [33m[Auth] No token found in cookies or headers[39m
+2026-01-22 14:01:00:10 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 14:01:00:10 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:01:00:10 [33mwarn[39m: [33m[Auth] No token found in cookies or headers[39m
+2026-01-22 14:01:00:10 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 14:01:00:10 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 14:01:00:10 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 14:01:00:10 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 14:01:00:10 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:01:00:10 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:01:00:10 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 14:01:00:10 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 14:13:46:1346 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:13:46:1346 [33mwarn[39m: [33m[Auth] No token found in cookies or headers[39m
+2026-01-22 14:13:46:1346 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 14:13:46:1346 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:13:46:1346 [33mwarn[39m: [33m[Auth] No token found in cookies or headers[39m
+2026-01-22 14:13:46:1346 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 14:13:47:1347 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 14:13:47:1347 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 14:13:47:1347 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:13:47:1347 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:13:47:1347 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 14:13:47:1347 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 14:13:47:1347 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 14:21:24:2124 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:21:24:2124 [33mwarn[39m: [33m[Auth] No token found in cookies or headers[39m
+2026-01-22 14:21:24:2124 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-01-22 14:21:24:2124 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 14:21:24:2124 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 14:21:24:2124 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 14:21:24:2124 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:21:24:2124 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 14:21:24:2124 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 14:21:24:2124 [32minfo[39m: [32mSocket connected: kE4fhVXm3OyybWQCAAAH[39m
+2026-01-22 14:21:24:2124 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:21:24:2124 [32minfo[39m: [32mSocket disconnected: kE4fhVXm3OyybWQCAAAH[39m
+2026-01-22 14:21:26:2126 [32minfo[39m: [32mSocket connected: uesDoPlWqDQQw8A9AAAJ[39m
+2026-01-22 14:21:26:2126 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:21:59:2159 [32minfo[39m: [32mSocket disconnected: uesDoPlWqDQQw8A9AAAJ[39m
+2026-01-22 14:21:59:2159 [32minfo[39m: [32mSocket disconnected: c6lLrs4mqNx5wkC_AAAF[39m
+2026-01-22 14:21:59:2159 [32minfo[39m: [32mSocket disconnected: 2NS1R5KN3lUCKtL6AAAB[39m
+2026-01-22 14:43:34:4334 [32minfo[39m: [32m🚀 Server running in development mode on port 5000[39m
+2026-01-22 14:44:11:4411 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 14:44:11:4411 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:44:11:4411 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 14:44:11:4411 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:44:11:4411 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 14:44:11:4411 [32minfo[39m: [32mSocket connected: xVn04D20pAqnb7hxAAAC[39m
+2026-01-22 14:44:11:4411 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:44:11:4411 [32minfo[39m: [32mSocket connected: -ZM6ucccG6ZpE8iMAAAD[39m
+2026-01-22 14:44:11:4411 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:44:11:4411 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 14:44:11:4411 [32minfo[39m: [32mSocket disconnected: -ZM6ucccG6ZpE8iMAAAD[39m
+2026-01-22 14:44:12:4412 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 14:44:13:4413 [32minfo[39m: [32mSocket connected: 6qXhu0_Zw9NJaNFUAAAF[39m
+2026-01-22 14:44:13:4413 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:44:28:4428 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 14:44:28:4428 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 14:44:28:4428 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 14:44:29:4429 [35mhttp[39m: [35mGET /api/tasks?assignedTo=69400b9d502bebd03fd9ed78[39m
+2026-01-22 14:44:30:4430 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 14:44:30:4430 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-01-22 14:44:34:4434 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:34:4434 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:34:4434 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:34:4434 [35mhttp[39m: [35mGET /api/projects/69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:34:4434 [35mhttp[39m: [35mGET /api/tasks?projectId=69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:40:4440 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:40:4440 [35mhttp[39m: [35mGET /api/tasks/6971d430c7d7d340563009e2[39m
+2026-01-22 14:44:51:4451 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:51:4451 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:51:4451 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:54:4454 [35mhttp[39m: [35mPATCH /api/tasks/6971d430c7d7d340563009e2[39m
+2026-01-22 14:44:54:4454 [35mhttp[39m: [35mGET /api/tasks?projectId=69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:54:4454 [35mhttp[39m: [35mGET /api/tasks?projectId=69400baf502bebd03fd9ed85[39m
+2026-01-22 14:44:54:4454 [35mhttp[39m: [35mGET /api/tasks?projectId=69400baf502bebd03fd9ed85[39m
+2026-01-22 14:46:25:4625 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:46:25:4625 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:46:25:4625 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:46:25:4625 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:46:25:4625 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:46:25:4625 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:46:26:4626 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:46:26:4626 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:46:26:4626 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:46:26:4626 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:47:08:478 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:47:08:478 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:47:08:478 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:47:08:478 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:47:08:478 [35mhttp[39m: [35mGET /api/projects/69400baf502bebd03fd9ed85[39m
+2026-01-22 14:47:08:478 [35mhttp[39m: [35mGET /api/tasks?projectId=69400baf502bebd03fd9ed85[39m
+2026-01-22 14:47:08:478 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:47:08:478 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:47:08:478 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:47:08:478 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:47:08:478 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:47:08:478 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:48:41:4841 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 left project room: project:69400baf502bebd03fd9ed85[39m
+2026-01-22 14:49:09:499 [35mhttp[39m: [35mGET /api/projects/69400baf502bebd03fd9ed85[39m
+2026-01-22 14:49:09:499 [35mhttp[39m: [35mGET /api/tasks?projectId=69400baf502bebd03fd9ed85[39m
+2026-01-22 14:49:09:499 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:49:09:499 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:49:09:499 [32minfo[39m: [32mSocket connected: aRdreKqwt1v3T7sOAAAI[39m
+2026-01-22 14:49:09:499 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:49:09:499 [32minfo[39m: [32mSocket connected: Cxd1GBsSSwi6dBBpAAAJ[39m
+2026-01-22 14:49:09:499 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:49:10:4910 [32minfo[39m: [32mSocket connected: zJKyGopFaNZhebpcAAAM[39m
+2026-01-22 14:49:10:4910 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:49:10:4910 [32minfo[39m: [32mSocket connected: U2yi2RMrYiXcil0MAAAN[39m
+2026-01-22 14:49:10:4910 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:50:18:5018 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:50:18:5018 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:50:18:5018 [32minfo[39m: [32mSocket connected: 5TRbOk0PN03XWvGiAAAQ[39m
+2026-01-22 14:50:18:5018 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:50:18:5018 [32minfo[39m: [32mSocket connected: C97EHvonY-yKtxe6AAAR[39m
+2026-01-22 14:50:18:5018 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:50:21:5021 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:50:21:5021 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-01-22 14:50:22:5022 [32minfo[39m: [32mSocket connected: DtiP4LOJ7L5ggcxrAAAU[39m
+2026-01-22 14:50:22:5022 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:50:22:5022 [32minfo[39m: [32mSocket connected: mzBjoD41Cmgw7FqfAAAV[39m
+2026-01-22 14:50:22:5022 [32minfo[39m: [32mUser 69400b9d502bebd03fd9ed78 joined rooms: user:69400b9d502bebd03fd9ed78, room:users[39m
+2026-01-22 14:50:45:5045 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-01-22 14:50:45:5045 [35mhttp[39m: [35mGET /api/projects[39m
+2026-01-22 14:50:45:5045 [37mdebug[39m: [37mgetMyProjects - User: 69400b9d502bebd03fd9ed78, Role: user[39m
+2026-01-22 14:50:45:5045 [37mdebug[39m: [37mUser fetching own projects. Count: 1[39m
+2026-01-22 14:50:45:5045 [35mhttp[39m: [35mGET /api/notifications[39m

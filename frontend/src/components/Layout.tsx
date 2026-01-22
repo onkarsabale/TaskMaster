@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Sidebar } from './Sidebar';
 
-import { SidebarProvider } from '../context/SidebarContext';
+import { SidebarProvider } from '../context/SidebarProvider';
 
 export const Layout = ({ children }: { children: ReactNode }) => {
     return (

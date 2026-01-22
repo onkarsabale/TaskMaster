@@ -1,13 +1,14 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
 import { useTheme } from '../context/ThemeContext';
-import { useSidebar } from '../context/SidebarContext';
+import { useSidebar } from '../context/useSidebar';
 
-export const Sidebar = () => {
+
+const SidebarContent = () => {
     const { user } = useAuthStore();
     const { theme, toggleTheme } = useTheme();
     const location = useLocation();
-    const { isOpen, close } = useSidebar();
+    const { close } = useSidebar();
 
     const getLinkClass = (path: string) => {
         const isActive = location.pathname === path;
@@ -18,7 +19,7 @@ export const Sidebar = () => {
         return `${baseClass} ${isActive ? activeClass : inactiveClass}`;
     };
 
-    const SidebarContent = () => (
+    return (
         <div className="p-4 flex flex-col h-full justify-between">
             <div className="flex flex-col gap-6">
                 {/* Branding */}
@@ -91,6 +92,10 @@ export const Sidebar = () => {
             </div>
         </div>
     );
+};
+
+export const Sidebar = () => {
+    const { isOpen, close } = useSidebar();
 
     return (
         <>
@@ -112,3 +117,4 @@ export const Sidebar = () => {
         </>
     );
 };
+

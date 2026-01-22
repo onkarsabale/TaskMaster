@@ -14,10 +14,10 @@ import { Settings } from './pages/Settings';
 import { useAuthStore } from './store/auth.store';
 import { RoleBasedRoute } from './components/RoleBasedRoute';
 import { ToastProvider } from './context/ToastContext';
-import { ConfirmDialogProvider } from './context/ConfirmDialogContext';
+import { ConfirmDialogProvider } from './context/ConfirmDialogContext.tsx';
 import { Layout } from './components/Layout';
 import { ThemeProvider } from './context/ThemeContext';
-import { SocketProvider } from './context/SocketContext';
+import { SocketProvider } from './context/SocketProvider';
 
 // Create a client
 const queryClient = new QueryClient({

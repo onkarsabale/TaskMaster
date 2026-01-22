@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useAuthStore } from '../store/auth.store';
 import { useProjects } from '../hooks/useProjects';
-import { useSidebar } from '../context/SidebarContext';
+import { useSidebar } from '../context/useSidebar';
 import { Loader } from '../components/Loader';
 import { ErrorState } from '../components/ErrorState';
 import { MemberCard } from '../components/team/MemberCard';
@@ -100,18 +100,17 @@ export const Team = () => {
     const handleInvite = async (data: InviteFormData) => {
         try {
             // 1. Create User
+            // Ideally define a CreateUserDto, but for now Partial<User> & { password: string } is okay or proper casting
             const newUser = await createUserMutation.mutateAsync({
                 username: data.username,
                 email: data.email,
                 role: data.role,
-                password: data.password,
-            } as any);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                ...({ password: data.password } as any), // Password isn't in User type typically
+            });
 
             // 2. Add to Project if selected
             if (data.projectId && newUser?._id) {
-                // Default project role to 'member' or 'viewer'? 
-                // Team modal doesn't specify project role, just system role. 
-                // Let's assume 'member' for project logic
                 await addMemberToProjectMutation.mutateAsync({
                     projectId: data.projectId,
                     userId: newUser._id,
@@ -121,9 +120,10 @@ export const Team = () => {
 
             setIsInviteModalOpen(false);
             alert('Member added successfully!'); // Ideally Toast
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error(err);
-            alert(err.response?.data?.message || 'Failed to add member');
+            const error = err as { response?: { data?: { message?: string } } };
+            alert(error.response?.data?.message || 'Failed to add member');
         }
     };
 
@@ -137,26 +137,16 @@ export const Team = () => {
         if (confirmed) {
             try {
                 await deleteUserMutation.mutateAsync(userId);
-            } catch (err: any) {
-                alert(err.response?.data?.message || 'Failed to delete user');
+            } catch (err: unknown) {
+                const error = err as { response?: { data?: { message?: string } } };
+                alert(error.response?.data?.message || 'Failed to delete user');
             }
         }
     };
 
-    const handleEdit = (_member: User) => {
-        // Implement Edit Logic (reuse UserModal logic properly)
-        // For now, prompt user that feature is handled via full admin if needed, or implement Edit Modal later.
-        // Given complexity, I will just alert or implement basic logic if time permits.
-        // Wait, I created 'MemberRow' with 'onEdit'. 
-        // I can reuse InviteModal for editing? No, it has password field logic.
-        // I should have a separate 'Edit' flow or disable it for now and focus on 'Add'.
-        // Or reuse UserModal if I exported it.
-        // UserModal is in `components/admin/UserModal`. I can try to use it if I update imports.
-        // But `Team.tsx` logic is getting big.
-        // User asked for "Change Role".
-        // I'll alert for now or navigation to Admin panel?
+    const handleEdit = (member: User) => {
         if (canManage) {
-            alert('Edit feature coming soon (use Admin panel for full edit capabilities)');
+            alert(`Edit feature coming soon for ${member.username} (use Admin panel for full edit capabilities)`);
         }
     };
 

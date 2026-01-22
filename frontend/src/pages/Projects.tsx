@@ -4,7 +4,7 @@ import { Loader } from '../components/Loader';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
 
-import { useSidebar } from '../context/SidebarContext';
+import { useSidebar } from '../context/useSidebar';
 
 export const Projects = () => {
     const { toggle } = useSidebar();

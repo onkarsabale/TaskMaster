@@ -8,11 +8,11 @@ import { useState, useMemo, useEffect } from 'react';
 import { TaskList } from '../components/TaskList';
 import { TaskForm } from '../components/TaskForm';
 import { UserSearch } from '../components/UserSearch';
-import { useSocketContext } from '../context/SocketContext';
-import { useConfirmDialog } from '../context/ConfirmDialogContext';
-import { useSidebar } from '../context/SidebarContext';
+import { useSocketContext } from '../context/useSocketContext';
+import { useSidebar } from '../context/useSidebar';
 import type { Task, CreateTaskDto, UpdateTaskDto } from '../types/task';
 import type { ProjectMember } from '../types/project';
+import { useConfirmDialog } from '../context/ConfirmDialogContext';
 
 export const ProjectDetails = () => {
     const { id } = useParams<{ id: string }>();
@@ -21,13 +21,22 @@ export const ProjectDetails = () => {
     const { joinProjectRoom, leaveProjectRoom } = useSocketContext();
     const { confirm } = useConfirmDialog();
     const { toggle } = useSidebar();
-    const [showMembersPanel, setShowMembersPanel] = useState(false);
+    const [showMembersPanel, setShowMembersPanel] = useState(() => window.innerWidth >= 768);
 
-    useEffect(() => {
-        if (window.innerWidth >= 768) {
-            setShowMembersPanel(true);
-        }
-    }, []);
+    // useEffect(() => {
+    //     // Optional: Add resize listener if we want responsive behavior on resize
+    //     const handleResize = () => {
+    //         if (window.innerWidth >= 768 && !showMembersPanel) {
+    //             // only auto-open, don't auto-close? or keep user preference?
+    //             // The original code only checked on mount.
+    //             // let's stick to initial value or strict generic resize if desired.
+    //             // For now, lazy init covers the "on mount" logic.
+    //             // We can leave this empty or remove the effect entirely if we only cared about initial load.
+    //         }
+    //     };
+    //     // window.addEventListener('resize', handleResize);
+    //     // return () => window.removeEventListener('resize', handleResize);
+    // }, []);
 
     // Join Project Room for Real-time Updates
     useEffect(() => {
