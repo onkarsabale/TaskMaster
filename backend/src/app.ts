@@ -16,7 +16,7 @@ import { swaggerSpec } from './config/swagger.js';
 const app = express();
 
 app.use(cors({
-    origin: env.CLIENT_URL,
+    origin: '*',
     credentials: true,
 }));
 app.use(express.json());
