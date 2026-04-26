@@ -21,3 +21,7 @@
 2026-01-22 14:13:46:1346 [31merror[39m: [31m401 - Not authorized, no token[39m
 2026-01-22 14:13:46:1346 [31merror[39m: [31m401 - Not authorized, no token[39m
 2026-01-22 14:21:24:2124 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-04-26 16:01:10:110 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-04-26 16:01:16:116 [31merror[39m: [31m401 - Not authorized, no token[39m
+2026-04-26 16:05:05:55 [31merror[39m: [31m500 - Task validation failed: dueDate: Cast to date failed for value "Invalid Date" (type Date) at path "dueDate"[39m
+2026-04-26 16:05:09:59 [31merror[39m: [31m500 - Task validation failed: dueDate: Cast to date failed for value "Invalid Date" (type Date) at path "dueDate"[39m
