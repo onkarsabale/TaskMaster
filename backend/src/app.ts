@@ -15,7 +15,7 @@ import { swaggerSpec } from './config/swagger.js';
 
 const app = express();
 
-const allowedOrigins = [env.CLIENT_URL, 'http://localhost:5173'];
+const allowedOrigins = [env.CLIENT_URL, 'http://localhost:5173',"https://task-master-tpwf.vercel.app"];
 
 app.use(cors({
     origin: (origin, callback) => {
