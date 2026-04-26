@@ -10,6 +10,7 @@ export const findById = async (id) => {
 export const findByMember = async (userId) => {
     return await Project.find({ 'members.user': userId })
         .populate('owner', 'username email')
+        .populate('members.user', 'username email')
         .sort({ updatedAt: -1 });
 };
 export const addMember = async (projectId, userId, role) => {
@@ -25,5 +26,8 @@ export const isMember = async (projectId, userId) => {
 };
 export const findByIdSimple = async (id) => {
     return await Project.findById(id);
+};
+export const deleteById = async (id) => {
+    return await Project.findByIdAndDelete(id);
 };
 //# sourceMappingURL=project.repository.js.map

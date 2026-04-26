@@ -1,0 +1,6 @@
+/docker-compose.yml
+.env
+backend/.env
+node.modules/
+dist/
+build/

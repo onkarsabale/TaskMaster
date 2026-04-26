@@ -6,4 +6,5 @@ export declare const addMember: (projectId: string, userId: string, role: "proje
 export declare const removeMember: (projectId: string, userId: string) => Promise<IProject | null>;
 export declare const isMember: (projectId: string, userId: string) => Promise<boolean>;
 export declare const findByIdSimple: (id: string) => Promise<IProject | null>;
+export declare const deleteById: (id: string) => Promise<IProject | null>;
 //# sourceMappingURL=project.repository.d.ts.map

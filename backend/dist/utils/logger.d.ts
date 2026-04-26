@@ -1,6 +1,3 @@
-export declare const logger: {
-    info: (message: string) => void;
-    error: (message: string) => void;
-    warn: (message: string) => void;
-};
+import winston from 'winston';
+export declare const logger: winston.Logger;
 //# sourceMappingURL=logger.d.ts.map

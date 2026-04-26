@@ -53,4 +53,22 @@ export const inviteUserToProject = async (projectId, email, senderId) => {
     });
     return { message: 'Invitation sent successfully' };
 };
+export const deleteProject = async (projectId, userId) => {
+    // 1. Verify user is the owner
+    const project = await projectRepo.findByIdSimple(projectId);
+    if (!project) {
+        throw new AppError('Project not found', 404);
+    }
+    if (project.owner.toString() !== userId) {
+        throw new AppError('Only the project owner can delete this project', 403);
+    }
+    // 2. Delete all tasks associated with this project
+    const { Task } = await import('../tasks/task.model.js');
+    await Task.deleteMany({ project: projectId });
+    // 3. Delete pending invitations (notifications) for this project
+    const { Notification } = await import('../notifications/notification.model.js');
+    await Notification.deleteMany({ relatedId: projectId, type: 'PROJECT_INVITE', status: 'pending' });
+    // 4. Delete the project itself
+    return await projectRepo.deleteById(projectId);
+};
 //# sourceMappingURL=project.service.js.map

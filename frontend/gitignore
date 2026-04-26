@@ -1,0 +1,5 @@
+/docker-compose.yml
+.env
+node.modules/
+dist/
+frontend/.env

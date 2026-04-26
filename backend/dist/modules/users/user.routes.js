@@ -5,9 +5,9 @@ const router = Router();
 router.patch('/profile', protect, userController.updateProfile);
 router.get('/search', protect, userController.searchUsers);
 // Admin Routes
-router.get('/', protect, authorize('admin'), userController.getUsers);
-router.post('/', protect, authorize('admin'), userController.createUser);
-router.patch('/:id', protect, authorize('admin'), userController.updateUser);
-router.delete('/:id', protect, authorize('admin'), userController.deleteUser);
+router.get('/', protect, authorize('admin', 'manager'), userController.getUsers);
+router.post('/', protect, authorize('admin', 'manager'), userController.createUser);
+router.patch('/:id', protect, authorize('admin', 'manager'), userController.updateUser);
+router.delete('/:id', protect, authorize('admin', 'manager'), userController.deleteUser);
 export default router;
 //# sourceMappingURL=user.routes.js.map

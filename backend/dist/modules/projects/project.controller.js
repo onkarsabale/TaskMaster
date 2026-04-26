@@ -1,11 +1,12 @@
 import * as projectService from './project.service.js';
 import { Project } from './project.model.js';
 import * as notificationService from '../notifications/notification.service.js';
+import { logger } from '../../utils/logger.js';
 export const createProject = async (req, res) => {
     try {
         const { title, description } = req.body;
         // @ts-ignore - user is attached by auth middleware
-        const userId = req.user._id;
+        const userId = req.user._id.toString();
         const project = await projectService.createProject(title, description, userId);
         res.status(201).json(project);
     }
@@ -16,18 +17,17 @@ export const createProject = async (req, res) => {
 export const getMyProjects = async (req, res) => {
     try {
         // @ts-ignore
-        const userId = req.user._id;
-        // @ts-ignore
+        const userId = req.user._id.toString();
         const userRole = req.user.role;
-        console.log(`[DEBUG] getMyProjects - User: ${userId}, Role: ${userRole}`);
+        logger.debug(`getMyProjects - User: ${userId}, Role: ${userRole}`);
         let projects;
         if (userRole === 'admin') {
             projects = await Project.find().populate('owner', 'username email').populate('members.user', 'username email');
-            console.log(`[DEBUG] Admin fetching all projects. Count: ${projects.length}`);
+            logger.debug(`Admin fetching all projects. Count: ${projects.length}`);
         }
         else {
             projects = await projectService.getUserProjects(userId);
-            console.log(`[DEBUG] User fetching own projects. Count: ${projects.length}`);
+            logger.debug(`User fetching own projects. Count: ${projects.length}`);
         }
         res.json(projects);
     }
@@ -84,7 +84,7 @@ export const inviteMember = async (req, res) => {
         const { id } = req.params;
         const { email } = req.body;
         // @ts-ignore
-        const senderId = req.user._id;
+        const senderId = req.user._id.toString();
         if (!id)
             return res.status(400).json({ message: 'Project ID is required' });
         if (!email)
@@ -98,6 +98,52 @@ export const inviteMember = async (req, res) => {
         }
         else {
             res.status(500).json({ message: 'Error sending invitation', error });
+        }
+    }
+};
+export const removeMember = async (req, res) => {
+    try {
+        const { id, userId } = req.params;
+        if (!id)
+            return res.status(400).json({ message: 'Project ID is required' });
+        if (!userId)
+            return res.status(400).json({ message: 'User ID is required' });
+        // Prevent owner from being removed (extra safeguard)
+        const project = await projectService.getProjectById(id);
+        if (project && project.owner._id.toString() === userId) {
+            return res.status(400).json({ message: 'Cannot remove the project owner' });
+        }
+        const updatedProject = await projectService.removeMember(id, userId);
+        if (!updatedProject) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+        res.json(updatedProject);
+    }
+    catch (error) {
+        logger.error('Error removing member', error);
+        res.status(500).json({ message: 'Error removing member', error });
+    }
+};
+export const deleteProject = async (req, res) => {
+    try {
+        const { id } = req.params;
+        // @ts-ignore
+        const userId = req.user._id.toString();
+        if (!id)
+            return res.status(400).json({ message: 'Project ID is required' });
+        const deletedProject = await projectService.deleteProject(id, userId);
+        if (!deletedProject) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+        res.json({ message: 'Project deleted successfully' });
+    }
+    catch (error) {
+        if (error instanceof Error && error.statusCode) {
+            res.status(error.statusCode).json({ message: error.message });
+        }
+        else {
+            logger.error('Error deleting project', error);
+            res.status(500).json({ message: 'Error deleting project', error });
         }
     }
 };

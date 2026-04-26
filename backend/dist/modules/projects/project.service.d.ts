@@ -7,4 +7,5 @@ export declare const removeMember: (projectId: string, userId: string) => Promis
 export declare const inviteUserToProject: (projectId: string, email: string, senderId: string) => Promise<{
     message: string;
 }>;
+export declare const deleteProject: (projectId: string, userId: string) => Promise<IProject | null>;
 //# sourceMappingURL=project.service.d.ts.map

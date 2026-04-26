@@ -2,7 +2,7 @@ import mongoose, { Document } from 'mongoose';
 export interface INotification extends Document {
     recipient: mongoose.Types.ObjectId;
     sender: mongoose.Types.ObjectId;
-    type: 'PROJECT_INVITE' | 'INVITE_ACCEPTED' | 'GENERAL';
+    type: 'PROJECT_INVITE' | 'INVITE_ACCEPTED' | 'TASK_ASSIGNED' | 'GENERAL';
     relatedId?: mongoose.Types.ObjectId;
     message: string;
     isRead: boolean;

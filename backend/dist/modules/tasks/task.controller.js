@@ -2,7 +2,10 @@ import * as taskService from './task.service.js';
 import { createTaskSchema, updateTaskSchema } from './task.dto.js';
 import { Project } from '../projects/project.model.js';
 import { Task } from './task.model.js';
+import { logger } from '../../utils/logger.js';
 import { object } from 'zod';
+import * as notificationService from '../notifications/notification.service.js';
+import mongoose from 'mongoose';
 export const createTask = async (req, res, next) => {
     try {
         const data = createTaskSchema.parse(req.body);
@@ -38,10 +41,20 @@ export const createTask = async (req, res, next) => {
                 const assignedId = typeof task.assignedTo === 'object' ? task.assignedTo._id : task.assignedTo;
                 // Don't notify if assigning to self
                 if (assignedId.toString() !== req.user._id.toString()) {
+                    // Socket notification (real-time)
                     io.to(`user:${assignedId}`).emit('notification:assigned', {
                         message: `You have been assigned a new task: ${task.title}`,
                         taskId: task._id,
                         projectId: data.projectId
+                    });
+                    // Persistent notification (database)
+                    await notificationService.createNotification({
+                        recipient: new mongoose.Types.ObjectId(assignedId.toString()),
+                        sender: req.user._id,
+                        type: 'TASK_ASSIGNED',
+                        relatedId: task._id,
+                        message: `You have been assigned a new task: ${task.title}`,
+                        status: 'none'
                     });
                 }
             }
@@ -78,7 +91,7 @@ export const getTasks = async (req, res, next) => {
             // Add other filters as needed
             // Search logic if needed (reuse from Dashboard logic or implement here)
             // For now, simple match
-            console.log(`[DEBUG] Admin getTasks Query:`, query);
+            logger.debug(`Admin getTasks Query:`, query);
             tasks = await Task.find(query)
                 .populate('assignedTo', 'username email avatar')
                 .populate('createdBy', 'username email')
@@ -166,10 +179,20 @@ export const updateTask = async (req, res, next) => {
             io.to(`project:${task.projectId}`).emit('task:updated', updatedTask);
             if (data.assignedTo && data.assignedTo !== task.assignedTo?.toString()) {
                 if (data.assignedTo !== req.user._id.toString()) {
+                    // Socket notification (real-time)
                     io.to(`user:${data.assignedTo}`).emit('notification:assigned', {
                         message: `You have been assigned to task: ${updatedTask?.title}`,
                         taskId: updatedTask?._id,
                         projectId: task.projectId
+                    });
+                    // Persistent notification (database)
+                    await notificationService.createNotification({
+                        recipient: new mongoose.Types.ObjectId(data.assignedTo),
+                        sender: req.user._id,
+                        type: 'TASK_ASSIGNED',
+                        relatedId: updatedTask?._id,
+                        message: `You have been assigned to task: ${updatedTask?.title}`,
+                        status: 'none'
                     });
                 }
             }
