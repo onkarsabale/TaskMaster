@@ -826,3 +826,23 @@
 2026-04-26 16:06:36:636 [32minfo[39m: [32mSocket disconnected: i6AU3fA8w4ikAz4iAAAQ[39m
 2026-04-26 16:06:36:636 [32minfo[39m: [32mSocket disconnected: Op9emvycJoD5QaZJAAAV[39m
 2026-04-26 16:06:36:636 [32minfo[39m: [32mSocket disconnected: fXe7_wo40pFEH0DEAAAR[39m
+2026-04-26 16:17:55:1755 [32minfo[39m: [32m🚀 Server running in development mode on port 5000[39m
+2026-04-26 16:18:18:1818 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-04-26 16:18:18:1818 [32minfo[39m: [32mSocket connected: BJvPQfVL08HRoerbAAAC[39m
+2026-04-26 16:18:18:1818 [32minfo[39m: [32mUser 69ede975d60516c30f984614 joined rooms: user:69ede975d60516c30f984614, room:users[39m
+2026-04-26 16:18:18:1818 [32minfo[39m: [32mSocket connected: kusmIBsMLiNP-RH6AAAD[39m
+2026-04-26 16:18:18:1818 [32minfo[39m: [32mUser 69ede975d60516c30f984614 joined rooms: user:69ede975d60516c30f984614, room:users[39m
+2026-04-26 16:18:18:1818 [35mhttp[39m: [35mGET /api/auth/me[39m
+2026-04-26 16:18:18:1818 [35mhttp[39m: [35mGET /api/tasks[39m
+2026-04-26 16:18:18:1818 [35mhttp[39m: [35mGET /api/projects[39m
+2026-04-26 16:18:18:1818 [37mdebug[39m: [37mgetMyProjects - User: 69ede975d60516c30f984614, Role: user[39m
+2026-04-26 16:18:18:1818 [37mdebug[39m: [37mUser fetching own projects. Count: 0[39m
+2026-04-26 16:18:18:1818 [32minfo[39m: [32mSocket connected: iClziOi2bV-VwEKSAAAG[39m
+2026-04-26 16:18:18:1818 [32minfo[39m: [32mUser 69ede975d60516c30f984614 joined rooms: user:69ede975d60516c30f984614, room:users[39m
+2026-04-26 16:18:18:1818 [32minfo[39m: [32mSocket connected: 9z9-gjE73pjtOBqlAAAH[39m
+2026-04-26 16:18:18:1818 [32minfo[39m: [32mUser 69ede975d60516c30f984614 joined rooms: user:69ede975d60516c30f984614, room:users[39m
+2026-04-26 16:18:19:1819 [35mhttp[39m: [35mGET /api/notifications[39m
+2026-04-26 16:26:58:2658 [32minfo[39m: [32mSocket disconnected: BJvPQfVL08HRoerbAAAC[39m
+2026-04-26 16:26:58:2658 [32minfo[39m: [32mSocket disconnected: kusmIBsMLiNP-RH6AAAD[39m
+2026-04-26 16:26:59:2659 [32minfo[39m: [32mSocket disconnected: iClziOi2bV-VwEKSAAAG[39m
+2026-04-26 16:26:59:2659 [32minfo[39m: [32mSocket disconnected: 9z9-gjE73pjtOBqlAAAH[39m
